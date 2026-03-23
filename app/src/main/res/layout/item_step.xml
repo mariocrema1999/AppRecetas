@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="#F5F5F5"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/tvStepCheckbox"
+                android:layout_width="30dp"
+                android:layout_height="24dp"
+                android:gravity="center"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvStepTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="Paso 1"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvStepDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
+            android:text="Description..."/>
+
+        <!-- Timer View (Visible only if step has time) -->
+        <LinearLayout
+            android:id="@+id/timerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:background="#E0E0E0"
+            android:elevation="1dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="10:00"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <ImageButton
+                android:id="@+id/btnTimerToggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_media_play"/>
+            
+            <ImageButton
+                android:id="@+id/btnTimerReset"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_rotate"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.RecipeFormActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.RecetasApp.AppBarOverlay">
+        
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.RecetasApp.PopupOverlay" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre de la receta"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRecipeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL de la imagen (opcional)"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/etRecipeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Seleccionar imagen (opcional)"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Descripción"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRecipeDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:lines="3"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Minutos"
+                    android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPrepTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Porciones"
+                    android:layout_marginStart="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etServings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ingredientes"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Ingredient Input -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                
+                <EditText
+                    android:id="@+id/etNewIngredient"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Nuevo ingrediente"/>
+                    
+                <ImageButton
+                    android:id="@+id/btnAddIngredient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_input_add"/>
+            </LinearLayout>
+            
+            <TextView
+                android:id="@+id/tvIngredientsPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Steps Input -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pasos"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+                
+            <EditText
+                android:id="@+id/etStepDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Descripción del paso"
+                android:inputType="textMultiLine"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+                
+                <EditText
+                    android:id="@+id/etStepTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:hint="Tiempo (min) - Opcional"/>
+                    
+                <Button
+                    android:id="@+id/btnAddStep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Añadir Paso"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvStepsPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"/>
+
+            <Button
+                android:id="@+id/btnSaveRecipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GUARDAR RECETA"
+                android:enabled="false"/>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
