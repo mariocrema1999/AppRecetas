@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
@@ -17,7 +18,6 @@ class RecipeAdapter(
     private val onClick: (Recipe) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
-    // Variable para guardar la posición del elemento pulsado
     var longClickedPosition: Int = -1
         private set
 
@@ -30,11 +30,8 @@ class RecipeAdapter(
 
         init {
             view.setOnCreateContextMenuListener(this)
-
-            // Guardamos la posición en la pulsación larga
             view.setOnLongClickListener {
                 longClickedPosition = adapterPosition
-                // Devolvemos false para que el menú contextual se siga creando
                 false
             }
         }
@@ -44,7 +41,6 @@ class RecipeAdapter(
             v: View,
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
-            // Inflamos el menú desde el recurso XML
             (v.context as? Activity)?.menuInflater?.inflate(R.menu.menu_contextual, menu)
         }
     }
@@ -67,7 +63,6 @@ class RecipeAdapter(
             .centerCrop()
             .into(holder.image)
 
-        // Configurar el click listener
         holder.itemView.setOnClickListener {
             onClick(recipe)
         }
@@ -76,7 +71,26 @@ class RecipeAdapter(
     override fun getItemCount() = recipes.size
 
     fun updateRecipes(newRecipes: List<Recipe>) {
+        val diffCallback = RecipeDiffCallback(recipes, newRecipes)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        
         recipes = newRecipes
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    class RecipeDiffCallback(
+        private val oldList: List<Recipe>,
+        private val newList: List<Recipe>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
+        }
     }
 }

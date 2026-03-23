@@ -27,7 +27,17 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- RecyclerView for Recipes -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:iconifiedByDefault="false"
+            app:queryHint="Buscar recetas..."
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewRecipes"
             android:layout_width="0dp"
@@ -35,13 +45,12 @@
             android:padding="8dp"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/item_recipe" />
 
-        <!-- Empty State View -->
         <LinearLayout
             android:id="@+id/emptyStateView"
             android:layout_width="wrap_content"
@@ -55,9 +64,10 @@
             app:layout_constraintEnd_toEndOf="parent">
             
             <TextView
+                android:id="@+id/tvEmptyMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No hay recetas aún"
+                android:text="No hay recetas"
                 android:textSize="18sp"
                 android:textColor="@android:color/darker_gray"/>
         </LinearLayout>

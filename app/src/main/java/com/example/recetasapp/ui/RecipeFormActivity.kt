@@ -48,6 +48,15 @@ class RecipeFormActivity : AppCompatActivity() {
         setupInputs()
     }
 
+    private fun minPreparationTime(steps: List<Step>): Int {
+        var minTime = 0
+        for(step in steps) {
+            if(step.timeMinutes != null){
+                minTime += step.timeMinutes
+            }
+        }
+        return minTime
+    }
     private fun saveImageToInternalStorage(uri: Uri): String? {
         try {
             val inputStream = contentResolver.openInputStream(uri) ?: return null
@@ -122,22 +131,29 @@ class RecipeFormActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-             val recipe = Recipe(
-                 id = UUID.randomUUID().toString(),
-                 name = etName.text.toString(),
-                 description = etDesc.text.toString(),
-                 // 4. Usar la ruta de la imagen guardada
-                 image = imageInternalPath ?: "https://via.placeholder.com/150",
-                 prepTime = etTime.text.toString().toIntOrNull() ?: 0,
-                 servings = etServings.text.toString().toIntOrNull() ?: 1,
-                 ingredients = ingredients,
-                 steps = steps
-             )
+            var minTime = minPreparationTime(steps)
+            var prepTime = etTime.text.toString().toIntOrNull() ?: 0
 
-             val resultIntent = Intent()
-             resultIntent.putExtra("NEW_RECIPE", recipe)
-             setResult(RESULT_OK, resultIntent)
-             finish()
+            if (minTime <= prepTime) {
+                val recipe = Recipe(
+                    id = UUID.randomUUID().toString(),
+                    name = etName.text.toString(),
+                    description = etDesc.text.toString(),
+                    // 4. Usar la ruta de la imagen guardada
+                    image = imageInternalPath ?: "https://via.placeholder.com/150",
+                    prepTime = etTime.text.toString().toIntOrNull() ?: 0,
+                    servings = etServings.text.toString().toIntOrNull() ?: 1,
+                    ingredients = ingredients,
+                    steps = steps
+                )
+
+                val resultIntent = Intent()
+                resultIntent.putExtra("NEW_RECIPE", recipe)
+                setResult(RESULT_OK, resultIntent)
+                finish()
+            } else {
+                etTime.error = "Tiempo de preparación mínimo: $minTime minutos"
+            }
         }
     }
 
