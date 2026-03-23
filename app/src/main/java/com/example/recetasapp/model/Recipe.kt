@@ -2,13 +2,13 @@ package com.example.recetasapp.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-
+//añadir temporada: verano/invierno y bebida para acompañar: vino/cava...
+//consejos
 @Parcelize
 data class Step(
     val description: String,
     val timeMinutes: Int? = null
 ) : Parcelable
-
 @Parcelize
 data class Recipe(
     val id: String,
@@ -99,6 +99,32 @@ val DEFAULT_RECIPES = listOf(
             Step("Tuesta las nueces ligeramente.", 3),
             Step("Prepara la vinagreta."),
             Step("Mezcla todo justo antes de servir.")
+        )
+    ),
+    Recipe(
+        id = "4",
+        name = "Dorada al horno",
+        description = "Dorada fresca, saludable y sabrosa",
+        image = "https://static.bainet.es/clip/72de3c44-fb88-46c5-a70b-d9ae43d30d79_source-aspect-ratio_1600w_0.jpg",
+        prepTime = 13,
+        servings = 2,
+        ingredients = listOf(
+            "2 doradas",
+            "2 tomates",
+            "5 dientes de ajo",
+            "1 guindilla",
+            "Aceite de oliva virgen extra",
+            "sal gruesa",
+            "perejil picado"
+        ),
+        steps = listOf(
+            Step("Limpia las doradas y saca los lomos, sin retirar la piel."),
+            Step("Cubre la placa del horno con papel de aluminio. Vierte un chorrito de aceite y coloca los lomos dejando la piel hacia arriba. Añade sal gruesa. Introduce al horno a 220º durante 10 minutos",10),
+            Step("Cuando estén hechos retira la piel con cuidado y colocalos en una fuente amplia."),
+            Step("Limpia unos tomates y cortalos en rodajas gruesas y frielas en una sartén con un poco de aceite unos 3 minutos por cada lado a fuego medio-alto."),
+            Step("Colocalas en la misma fuente que el pescado."),
+            Step("Pon 8 cucharadas de aceite en otra sartén, calienta y añade los dientes de ajo cortados en láminas, cocinalos durante 2 minutos a fuego medio-bajo. Cuando se doren un poco añade unas tiras de guindilla y cocinalas otro minuto a fuego medio-bajo.",3),
+            Step("Vierte el aceite sobre el pescado. Espolvorea con perejil picado.")
         )
     )
 )
