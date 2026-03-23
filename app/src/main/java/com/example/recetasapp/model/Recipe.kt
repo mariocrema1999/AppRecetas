@@ -126,5 +126,102 @@ val DEFAULT_RECIPES = listOf(
             Step("Pon 8 cucharadas de aceite en otra sartén, calienta y añade los dientes de ajo cortados en láminas, cocinalos durante 2 minutos a fuego medio-bajo. Cuando se doren un poco añade unas tiras de guindilla y cocinalas otro minuto a fuego medio-bajo.",3),
             Step("Vierte el aceite sobre el pescado. Espolvorea con perejil picado.")
         )
+        //verano, vino rosado
+    ),
+    Recipe(
+        id = "5",
+        name = "Crepes de habas",
+        description = "Opción sana, elegante y de temporada",
+        image = "https://menudiario.com/files/2012/02/019.gif",
+        prepTime = 50,
+        servings = 2,
+        ingredients = listOf(
+            "400 ml de leche",
+            "200 g de harina",
+            "2 huevos",
+            "2 cebolletas",
+            "1/2 kg de habas peladas",
+            "1 diente de ajo",
+            "100 g de judías verdes",
+            "Aceite de oliva virgen extra",
+            "1 pimiento verde",
+            "1 cucharada de harina",
+            "1 vaso de agua",
+            "Sal"
+        ),
+        steps = listOf(
+            Step("Desgrana las habas y ponlas a cocer en una cazuela con agua y una pizca de sal.",13),
+            Step("Pon un poco de aceite en una sartén y pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
+            Step("Cuando esté pochado, agrega una cucharada de harina."),
+            Step("Rehoga brevemente y vierte el vino, el agua y una pizca de sal Deja cocer 10 minutos.", 10),
+            Step("Pon en una jarra la leche, el rsto de la harina(reserva una cucharada, un poco de perejil picado, los huevos, una cucharada de aceite y bate con una batidora"),
+            Step("Calienta bien la sarten, vierte un poco de masa y espárcela por el fondo, cuando empiece a hacer burbujas dale la vuelta. Continua asi hasta terminar toda la masa"),
+            Step("Pica finalmente las cebolletas y ponlas a dorar en una sarten con aceite. Saltea hasta que se dore a fuego medio-alto", 7),
+            Step("Agrega una cucharada de harina previamente reserbada y mezcla, incorpora las habas y saltea"),
+            Step("Deja que se temple y rellena las creepes. Sirve con las verduras")
+        )
+        //temporada primavera bebida sidra
+    ),
+    Recipe(
+        id = "6",
+        name = "Pastel de carne",
+        description = "Familiar, económico y reconfortante",
+        image = "https://cocinaconnoelia.com/wp-content/uploads/2023/05/Pastel-de-ternera-y-pure-de-patata-fuente-scaled.webp",
+        prepTime = 13,
+        servings = 3,
+        ingredients = listOf(
+            "500 g de carne de ternera",
+            "250 g de carne de cerdo",
+            "1 kg de patatas",
+            "1 vaso de leche",
+            "1 cebolla",
+            "2 dientes de ajo",
+            "18 aceitunas",
+            "1/2 litro de salsa de tomate",
+            "50 g de queso rallado",
+            "Aceite de oliva virgen extra",
+            "Pimienta negra",
+            "Sal",
+            "Perejil"
+        ),
+        steps = listOf(
+            Step("Pela las patatas, trocealas y ponlas a cocer durante 17 minutos en una cazuela con agua y sal.",17),
+            Step("Trocea las carnes en daditos y salpiméntalas"),
+            Step("Pica finamente la cebolla y los dientes de ajo, ponlos a dorar en una cazuela con un poco de aceite. Cuando se dore un poco añade la carne y las aceitunas picadas. Rehoga brevemente y vierte la salsa de tomate. Añadi pimienta. Mezcla todo y sirve en una fuente apta para horno"),
+            Step("Cuando las patatas estén cocidas escúrrelas y pásalas por el pasapuré, vierte la lecha salpimenta, espolvorea con perejil y mezcla bien."),
+            Step("Cubre la carne con el puré, espolvorea con el queso rallado."),
+            Step("Gratina en el horno durante 5 minutos", 5)
+        )
+    //verano, tinto del año
+    ),
+    Recipe(
+        id = "7",
+        name = "Sopa de arroz y verduras ",
+        description = "Plato de cuchara reconfortante, rápido y nutritivo",
+        image = "https://imag.bonviveur.com/arroz-caldoso-de-verduras-casero.jpg",
+        prepTime = 13,
+        servings = 3,
+        ingredients = listOf(
+            "100 g de arroz",
+            "2 cebolletas",
+            "1 puerro",
+            "1 tomate maduro",
+            "1 zanahoria",
+            "150 g de judías verdes",
+            "100 g de maíz cocido",
+            "1,5 l de caldo de verduras",
+            "2 huevos cocidos",
+            "Aceite de oliva virgen extra",
+            "Unas hebras de azafrán",
+            "Sal"
+        ),
+        steps = listOf(
+            Step("Pica fina toda la verdura."),
+            Step("Pon la verdura a pochar a fuego medio-bajo durante 17 minutos en una cazuela con un poco de aceite, sazona y agrega unas hebras de azafrán.",17),
+            Step("Cuando tomen un poco de color añade el caldo y, al romper a hervir, añade el arroz y déjalo cocer durante 15 minutos.", 15),
+            Step("Pela y pica los huevos e incorporalos."),
+            Step("Sirve en una sopera.")
+        )
+        //Otoño, tinto del año
     )
 )
