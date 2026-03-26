@@ -14,9 +14,12 @@ import com.example.recetasapp.model.Recipe
 import com.bumptech.glide.Glide
 
 class RecipeAdapter(
-    private var recipes: List<Recipe>,
+    private var _recipes: List<Recipe>,
     private val onClick: (Recipe) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+
+    val recipes: List<Recipe>
+        get() = _recipes
 
     var longClickedPosition: Int = -1
         private set
@@ -52,7 +55,7 @@ class RecipeAdapter(
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        val recipe = recipes[position]
+        val recipe = _recipes[position]
         holder.name.text = recipe.name
         holder.description.text = recipe.description
         holder.prepTime.text = "${recipe.prepTime} min"
@@ -68,13 +71,13 @@ class RecipeAdapter(
         }
     }
 
-    override fun getItemCount() = recipes.size
+    override fun getItemCount() = _recipes.size
 
     fun updateRecipes(newRecipes: List<Recipe>) {
-        val diffCallback = RecipeDiffCallback(recipes, newRecipes)
+        val diffCallback = RecipeDiffCallback(_recipes, newRecipes)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         
-        recipes = newRecipes
+        _recipes = newRecipes
         diffResult.dispatchUpdatesTo(this)
     }
 

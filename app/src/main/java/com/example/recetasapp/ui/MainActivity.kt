@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recetasapp.R
 import com.example.recetasapp.model.DEFAULT_RECIPES
 import com.example.recetasapp.model.Recipe
+import com.example.recetasapp.model.RecipeCategory
 import com.example.recetasapp.utils.AudioManager
 import com.example.recetasapp.utils.RecipeManager
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +29,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var audioManager: AudioManager
     private lateinit var recipeManager: RecipeManager
     private lateinit var searchView: SearchView
+    private lateinit var cgFilters: ChipGroup
     private var recipes = mutableListOf<Recipe>()
+    private var isShowingOnlyMyRecipes = false
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -40,8 +45,9 @@ class MainActivity : AppCompatActivity() {
             if (newRecipe != null) {
                 recipes.add(newRecipe)
                 recipeManager.saveRecipes(recipes)
-                // Al añadir, resetear el filtro para ver la nueva receta
                 searchView.setQuery("", false)
+                cgFilters.clearCheck()
+                isShowingOnlyMyRecipes = false
                 adapter.updateRecipes(recipes)
                 checkEmptyState()
             }
@@ -73,7 +79,6 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.adapter = adapter
 
-        // Configurar el buscador
         searchView = findViewById(R.id.searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -86,8 +91,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        // Registrar el RecyclerView para el menú contextual
+        cgFilters = findViewById(R.id.cgFilters)
+        cgFilters.setOnCheckedStateChangeListener { _, _ ->
+            filterRecipes(searchView.query.toString())
+        }
+
         registerForContextMenu(recyclerView)
+
+        findViewById<ExtendedFloatingActionButton>(R.id.fabMisRecetas).setOnClickListener {
+            isShowingOnlyMyRecipes = !isShowingOnlyMyRecipes
+            // Opcional: Cambiar el texto o color del botón para indicar estado
+            (it as ExtendedFloatingActionButton).text = if (isShowingOnlyMyRecipes) "Ver Todas" else "Mis recetas"
+            filterRecipes(searchView.query.toString())
+        }
 
         findViewById<FloatingActionButton>(R.id.fabAddRecipe).setOnClickListener {
             val intent = Intent(this, RecipeFormActivity::class.java)
@@ -98,21 +114,59 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun filterRecipes(query: String?) {
-        val filteredList = if (query.isNullOrBlank()) {
-            recipes
-        } else {
-            recipes.filter { it.name.contains(query, ignoreCase = true) }
+        val selectedChipIds = cgFilters.checkedChipIds
+        
+        val selectedCategories = selectedChipIds.mapNotNull { chipId ->
+            when (chipId) {
+                R.id.chipFilterCarne -> RecipeCategory.CARNE
+                R.id.chipFilterPescado -> RecipeCategory.PESCADO
+                R.id.chipFilterArroces -> RecipeCategory.ARROCES
+                R.id.chipFilterVerduras -> RecipeCategory.VERDURAS_HORTALIZAS
+                R.id.chipFilterLegumbres -> RecipeCategory.LEGUMBRES
+                R.id.chipFilterHuevos -> RecipeCategory.HUEVOS
+                R.id.chipFilterPastas -> RecipeCategory.PASTAS
+                R.id.chipFilterSopas -> RecipeCategory.SOPAS_CREMAS
+                R.id.chipFilterCeliacos -> RecipeCategory.CELIACOS
+                R.id.chipFilterDiabeticos -> RecipeCategory.DIABETICOS
+                R.id.chipFilterPostres -> RecipeCategory.POSTRES
+                else -> null
+            }
         }
+
+        val defaultIds = DEFAULT_RECIPES.map { it.id }.toSet()
+
+        val filteredList = recipes.filter { recipe ->
+            val matchesQuery = query.isNullOrBlank() || recipe.name.contains(query, ignoreCase = true)
+            
+            val recipeCategories = recipe.categories ?: emptyList()
+            val matchesCategories = if (selectedCategories.isEmpty()) {
+                true
+            } else {
+                selectedCategories.any { it in recipeCategories }
+            }
+            
+            val matchesMyRecipes = if (isShowingOnlyMyRecipes) {
+                recipe.id !in defaultIds
+            } else {
+                true
+            }
+            
+            matchesQuery && matchesCategories && matchesMyRecipes
+        }
+        
         adapter.updateRecipes(filteredList)
         
-        // Mostrar mensaje de "no hay resultados" si el filtro no devuelve nada
         val emptyView = findViewById<View>(R.id.emptyStateView)
         val tvEmptyMessage = findViewById<TextView>(R.id.tvEmptyMessage)
         
         if (filteredList.isEmpty()) {
             emptyView.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
-            tvEmptyMessage.text = if (query.isNullOrBlank()) "No hay recetas aún" else "No se encontraron recetas"
+            val message = when {
+                isShowingOnlyMyRecipes && query.isNullOrBlank() && selectedCategories.isEmpty() -> "No has creado recetas propias aún"
+                else -> "No se encontraron recetas"
+            }
+            tvEmptyMessage.text = message
         } else {
             emptyView.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
@@ -126,14 +180,9 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.contextual1 -> { 
                 val currentQuery = searchView.query.toString()
-                val currentShownList = if (currentQuery.isBlank()) {
-                    recipes
-                } else {
-                    recipes.filter { it.name.contains(currentQuery, ignoreCase = true) }
-                }
-
-                if (position < currentShownList.size) {
-                    val recipeToRemove = currentShownList[position]
+                val filteredList = adapter.recipes
+                if (position < filteredList.size) {
+                    val recipeToRemove = filteredList[position]
                     recipes.remove(recipeToRemove)
                     recipeManager.saveRecipes(recipes)
                     filterRecipes(currentQuery)

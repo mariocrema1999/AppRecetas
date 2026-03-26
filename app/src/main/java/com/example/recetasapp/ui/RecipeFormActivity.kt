@@ -14,7 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
+import com.example.recetasapp.model.RecipeCategory
 import com.example.recetasapp.model.Step
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -26,11 +29,9 @@ class RecipeFormActivity : AppCompatActivity() {
     private val steps = mutableListOf<Step>()
     private var imageInternalPath: String? = null
 
-    // 1. Registrar el launcher como una propiedad de la clase
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             Log.d("PhotoPicker", "Selected URI: $uri")
-            // 2. Guardar la imagen en el almacenamiento interno y obtener su ruta
             imageInternalPath = saveImageToInternalStorage(uri)
             findViewById<Button>(R.id.etRecipeImage).text = "Imagen seleccionada"
         } else {
@@ -57,6 +58,7 @@ class RecipeFormActivity : AppCompatActivity() {
         }
         return minTime
     }
+
     private fun saveImageToInternalStorage(uri: Uri): String? {
         try {
             val inputStream = contentResolver.openInputStream(uri) ?: return null
@@ -78,12 +80,10 @@ class RecipeFormActivity : AppCompatActivity() {
     }
 
     private fun setupInputs() {
-        // ... View bindings ...
         val etName = findViewById<EditText>(R.id.etRecipeName)
         val etDesc = findViewById<EditText>(R.id.etRecipeDescription)
         val etImage = findViewById<Button>(R.id.etRecipeImage)
 
-        // 3. El botón ahora solo lanza el selector de medios
         etImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -100,9 +100,9 @@ class RecipeFormActivity : AppCompatActivity() {
         val btnAddStep = findViewById<Button>(R.id.btnAddStep)
         val tvStepPreview = findViewById<TextView>(R.id.tvStepsPreview)
 
+        val cgCategories = findViewById<ChipGroup>(R.id.cgCategories)
         val btnSave = findViewById<Button>(R.id.btnSaveRecipe)
 
-        // Logic to enable save
         fun validate() {
             btnSave.isEnabled = !TextUtils.isEmpty(etName.text) &&
                                 !TextUtils.isEmpty(etDesc.text) &&
@@ -131,20 +131,34 @@ class RecipeFormActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            var minTime = minPreparationTime(steps)
-            var prepTime = etTime.text.toString().toIntOrNull() ?: 0
+            val minTime = minPreparationTime(steps)
+            val prepTime = etTime.text.toString().toIntOrNull() ?: 0
 
             if (minTime <= prepTime) {
+                val selectedCategories = mutableListOf<RecipeCategory>()
+                if (findViewById<Chip>(R.id.chipCarne).isChecked) selectedCategories.add(RecipeCategory.CARNE)
+                if (findViewById<Chip>(R.id.chipPescado).isChecked) selectedCategories.add(RecipeCategory.PESCADO)
+                if (findViewById<Chip>(R.id.chipArroces).isChecked) selectedCategories.add(RecipeCategory.ARROCES)
+                if (findViewById<Chip>(R.id.chipVerduras).isChecked) selectedCategories.add(RecipeCategory.VERDURAS_HORTALIZAS)
+                if (findViewById<Chip>(R.id.chipLegumbres).isChecked) selectedCategories.add(RecipeCategory.LEGUMBRES)
+                if (findViewById<Chip>(R.id.chipHuevos).isChecked) selectedCategories.add(RecipeCategory.HUEVOS)
+                if (findViewById<Chip>(R.id.chipPastas).isChecked) selectedCategories.add(RecipeCategory.PASTAS)
+                if (findViewById<Chip>(R.id.chipSopas).isChecked) selectedCategories.add(RecipeCategory.SOPAS_CREMAS)
+                if (findViewById<Chip>(R.id.chipCeliacos).isChecked) selectedCategories.add(RecipeCategory.CELIACOS)
+                if (findViewById<Chip>(R.id.chipDiabeticos).isChecked) selectedCategories.add(RecipeCategory.DIABETICOS)
+                if (findViewById<Chip>(R.id.chipPostres).isChecked) selectedCategories.add(RecipeCategory.POSTRES)
+
+
                 val recipe = Recipe(
                     id = UUID.randomUUID().toString(),
                     name = etName.text.toString(),
                     description = etDesc.text.toString(),
-                    // 4. Usar la ruta de la imagen guardada
                     image = imageInternalPath ?: "https://via.placeholder.com/150",
-                    prepTime = etTime.text.toString().toIntOrNull() ?: 0,
+                    prepTime = prepTime,
                     servings = etServings.text.toString().toIntOrNull() ?: 1,
                     ingredients = ingredients,
-                    steps = steps
+                    steps = steps,
+                    categories = selectedCategories
                 )
 
                 val resultIntent = Intent()
