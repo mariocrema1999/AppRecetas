@@ -7,8 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="verdePrimario">#81D100</color>
-    <color name="verdePrimarioSombra">#75BC0B</color>
+    <color name="verdePrimario">#8AC850</color>
+    <color name="verdePrimarioSombra">#8AC850</color>
     <color name="verdeSecundario">#18D100</color>
     <color name="verdeTerciario">#00D150</color>
+    <color name="primaryColor">#EDE8D0</color>
+    <color name="secondaryColor">#8AC850</color>
+    <color name="menuColor">#FFFFE3</color>
+    <color name="iconosColor">#FFDBBB</color>
+
 </resources>

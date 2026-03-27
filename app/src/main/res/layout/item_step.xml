@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/menuColor"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -51,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:backgroundTint="@color/menuColor"
             android:padding="12dp"
             android:background="#E0E0E0"
             android:elevation="1dp"

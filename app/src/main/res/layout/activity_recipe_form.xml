@@ -40,6 +40,7 @@
                     android:id="@+id/etRecipeName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
                     android:inputType="textCapSentences"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,6 +67,8 @@
                     android:id="@+id/etRecipeDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:inputType="textMultiLine"
                     android:lines="3"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -87,6 +90,8 @@
                         android:id="@+id/etPrepTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+
                         android:inputType="number"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,6 +106,8 @@
                         android:id="@+id/etServings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+
                         android:inputType="number"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -124,66 +131,98 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Carne" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPescado"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Pescado" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipArroces"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Arroces" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipVerduras"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Verduras y Hortalizas" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipLegumbres"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Legumbres" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipHuevos"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Huevos" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPastas"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Pastas" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipSopas"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Sopas y Cremas" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCeliacos"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Para Celíacos" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipDiabeticos"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Para Diabéticos" />
+
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPostres"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:text="Postres" />
 
             </com.google.android.material.chip.ChipGroup>
@@ -213,6 +252,8 @@
                     android:id="@+id/btnAddIngredient"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+
                     android:src="@android:drawable/ic_input_add"/>
             </LinearLayout>
             

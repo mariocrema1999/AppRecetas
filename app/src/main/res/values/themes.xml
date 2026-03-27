@@ -2,15 +2,18 @@
     <!-- Base application theme. -->
     <style name="Theme.RecetasApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/verdePrimario</item>
-        <item name="colorPrimaryVariant">@color/verdePrimario</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/secondaryColor</item>
+        <item name="colorPrimaryVariant">@color/secondaryColor</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/verdePrimarioSombra</item>
         <item name="colorSecondaryVariant">@color/verdePrimarioSombra</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <!-- Background color -->
+        <item name="android:windowBackground">@color/primaryColor</item>
         <!-- Customize your theme here. -->
     </style>
 
