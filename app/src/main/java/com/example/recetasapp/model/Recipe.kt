@@ -1,6 +1,7 @@
 package com.example.recetasapp.model
 
 import android.os.Parcelable
+import com.example.recetasapp.R
 import kotlinx.parcelize.Parcelize
 
 enum class RecipeCategory(val displayName: String) {
@@ -17,10 +18,33 @@ enum class RecipeCategory(val displayName: String) {
     DIABETICOS("Para Diabéticos")
 }
 
+enum class Allergen(val displayName: String, val iconResId: Int) {
+    GLUTEN("Cereales con gluten", R.drawable.allergengluten),
+    CRUSTACEOS("Crustáceos", R.drawable.crustaceos),
+    MOLUSCOS("Moluscos", R.drawable.moluscos),
+    PESCADO("Pescado", R.drawable.pescado),
+    HUEVOS("Huevos", R.drawable.huevos),
+    ALTRAMUCES("Altramuces", R.drawable.altramuces),
+    MOSTAZA("Mostaza", R.drawable.mostaza),
+    CACAHUETES("Cacahuetes", R.drawable.cacahuetes),
+    FRUTOS_CASCARA("Frutos de cáscara", R.drawable.frutosecos),
+    SOJA("Soja", R.drawable.soja),
+    SESAMO("Sésamo", R.drawable.sesamo),
+    APIO("Apio", R.drawable.apio),
+    LACTEOS("Leche y lácteos", R.drawable.lacteos),
+    SULFITOS("Sulfitos", R.drawable.alergenossulfitos)
+}
+
 @Parcelize
 data class Step(
     val description: String,
     val timeMinutes: Int? = null
+) : Parcelable
+
+@Parcelize
+data class RecipeIngredient(
+    val name: String,
+    val quantity: String? = null
 ) : Parcelable
 
 @Parcelize
@@ -31,9 +55,10 @@ data class Recipe(
     val image: String,
     val prepTime: Int,
     val servings: Int,
-    val ingredients: List<String>,
+    val ingredients: List<RecipeIngredient>,
     val steps: List<Step>,
-    val categories: List<RecipeCategory> = emptyList()
+    val categories: List<RecipeCategory> = emptyList(),
+    val allergens: List<Allergen>? = emptyList()
 ) : Parcelable
 
 // TODO cuando hagamos la base de datos las recetas tendran un atributo nombre de usuario para que al clickar en mis recetas solo se muestren las recetas creadas por el usuario logeado.
@@ -49,12 +74,12 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 25,
         servings = 4,
         ingredients = listOf(
-            "400g de pasta (espagueti o linguini)",
-            "200g de panceta o tocino en cubos",
-            "4 huevos grandes",
-            "100g de queso parmesano rallado",
-            "Pimienta negra recién molida",
-            "Sal al gusto"
+            RecipeIngredient("Pasta (espagueti o linguini)", "400g"),
+            RecipeIngredient("Panceta o tocino en cubos", "200g"),
+            RecipeIngredient("Huevos grandes", "4"),
+            RecipeIngredient("Queso parmesano rallado", "100g"),
+            RecipeIngredient("Pimienta negra recién molida"),
+            RecipeIngredient("Sal al gusto")
         ),
         steps = listOf(
             Step("Pon a hervir agua con sal en una olla grande y cocina la pasta según las instrucciones del paquete hasta que esté al dente.", 10),
@@ -64,9 +89,10 @@ val DEFAULT_RECIPES = listOf(
             Step("Retira la sartén del fuego y añade la pasta caliente a la panceta. Mezcla bien.", 2),
             Step("Añade la mezcla de huevo y queso a la pasta caliente, mezclando rápidamente."),
             Step("Si la salsa está muy espesa, añade poco a poco el agua de cocción reservada."),
-            Step("Sirve inmediatamente con más queso parmesano y pimienta negra por encima.")
+            Step("Sirve inmediatamente con más queso parmesano y pimiento negra por encima.")
         ),
-        categories = listOf(RecipeCategory.PASTAS, RecipeCategory.HUEVOS, RecipeCategory.CARNE)
+        categories = listOf(RecipeCategory.PASTAS, RecipeCategory.HUEVOS, RecipeCategory.CARNE),
+        allergens = listOf(Allergen.GLUTEN, Allergen.HUEVOS, Allergen.LACTEOS)
     ),
     Recipe(
         id = "2",
@@ -76,13 +102,13 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 50,
         servings = 8,
         ingredients = listOf(
-            "200g de chocolate negro",
-            "150g de mantequilla",
-            "4 huevos",
-            "200g de azúcar",
-            "100g de harina",
-            "1 cucharadita de extracto de vainilla",
-            "Una pizca de sal"
+            RecipeIngredient("Chocolate negro", "200g"),
+            RecipeIngredient("Mantequilla", "150g"),
+            RecipeIngredient("Huevos", "4"),
+            RecipeIngredient("Azúcar", "200g"),
+            RecipeIngredient("Harina", "100g"),
+            RecipeIngredient("Extracto de vainilla", "1 cucharadita"),
+            RecipeIngredient("Sal", "Una pizca")
         ),
         steps = listOf(
             Step("Precalienta el horno a 180°C y engrasa un molde redondo de 22cm.", 10),
@@ -93,7 +119,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Vierte la mezcla en el molde y hornea.", 35),
             Step("Deja enfriar en el molde antes de desmoldar.", 10)
         ),
-        categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.POSTRES)
+        categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.POSTRES),
+        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN)
     ),
     Recipe(
         id = "3",
@@ -103,13 +130,14 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 15,
         servings = 4,
         ingredients = listOf(
-            "200g de lechuga mixta",
-            "2 tomates medianos",
-            "1 pepino",
-            "1 pimiento rojo",
-            "1 aguacate",
-            "100g de queso feta",
-            "Nueces y vinagreta"
+            RecipeIngredient("Lechuga mixta", "200g"),
+            RecipeIngredient("Tomates medianos", "2"),
+            RecipeIngredient("Pepino", "1"),
+            RecipeIngredient("Pimiento rojo", "1"),
+            RecipeIngredient("Aguacate", "1"),
+            RecipeIngredient("Queso feta", "100g"),
+            RecipeIngredient("Nueces"),
+            RecipeIngredient("Vinagreta")
         ),
         steps = listOf(
             Step("Lava y seca bien toda la lechuga."),
@@ -119,7 +147,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Prepara la vinagreta."),
             Step("Mezcla todo justo antes de servir.")
         ),
-        categories = listOf(RecipeCategory.VERDURAS_HORTALIZAS)
+        categories = listOf(RecipeCategory.VERDURAS_HORTALIZAS),
+        allergens = listOf(Allergen.LACTEOS, Allergen.FRUTOS_CASCARA)
     ),
     Recipe(
         id = "4",
@@ -129,13 +158,13 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 13,
         servings = 2,
         ingredients = listOf(
-            "2 doradas",
-            "2 tomates",
-            "5 dientes de ajo",
-            "1 guindilla",
-            "Aceite de oliva virgen extra",
-            "sal gruesa",
-            "perejil picado"
+            RecipeIngredient("Doradas", "2"),
+            RecipeIngredient("Tomates", "2"),
+            RecipeIngredient("Dientes de ajo", "5"),
+            RecipeIngredient("Guindilla", "1"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Sal gruesa"),
+            RecipeIngredient("Perejil picado")
         ),
         steps = listOf(
             Step("Limpia las doradas y saca los lomos, sin retirar la piel."),
@@ -146,7 +175,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Pon 8 cucharadas de aceite en otra sartén, calienta y añade los dientes de ajo cortados en láminas, cocinalos durante 2 minutos a fuego medio-bajo. Cuando se doren un poco añade unas tiras de guindilla y cocinalas otro minuto a fuego medio-bajo.",3),
             Step("Vierte el aceite sobre el pescado. Espolvorea con perejil picado.")
         ),
-        categories = listOf(RecipeCategory.PESCADO, RecipeCategory.VERDURAS_HORTALIZAS)
+        categories = listOf(RecipeCategory.PESCADO, RecipeCategory.VERDURAS_HORTALIZAS),
+        allergens = listOf(Allergen.PESCADO)
     ),
     Recipe(
         id = "5",
@@ -156,31 +186,32 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 50,
         servings = 2,
         ingredients = listOf(
-            "400 ml de leche",
-            "200 g de harina",
-            "2 huevos",
-            "2 cebolletas",
-            "1/2 kg de habas peladas",
-            "1 diente de ajo",
-            "100 g de judías verdes",
-            "Aceite de oliva virgen extra",
-            "1 pimiento verde",
-            "1 cucharada de harina",
-            "1 vaso de agua",
-            "Sal"
+            RecipeIngredient("Leche", "400 ml"),
+            RecipeIngredient("Harina", "200 g"),
+            RecipeIngredient("Huevos", "2"),
+            RecipeIngredient("Cebolletas", "2"),
+            RecipeIngredient("Habas peladas", "1/2 kg"),
+            RecipeIngredient("Diente de ajo", "1"),
+            RecipeIngredient("Judías verdes", "100 g"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Pimiento verde", "1"),
+            RecipeIngredient("Harina", "1 cucharada"),
+            RecipeIngredient("Agua", "1 vaso"),
+            RecipeIngredient("Sal")
         ),
         steps = listOf(
             Step("Desgrana las habas y ponlas a cocer en una cazuela con agua y una pizca de sal.",13),
-            Step("Pon un poco de aceite en una sartén y pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
+            Step("Pon un poco de aceite in una sartén y pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
             Step("Cuando esté pochado, agrega una cucharada de harina."),
             Step("Rehoga brevemente y vierte el vino, el agua y una pizca de sal Deja cocer 10 minutos.", 10),
             Step("Pon en una jarra la leche, el rsto de la harina(reserva una cucharada, un poco de perejil picado, los huevos, una cucharada de aceite y bate con una batidora"),
             Step("Calienta bien la sarten, vierte un poco de masa y espárcela por el fondo, cuando empiece a hacer burbujas dale la vuelta. Continua asi hasta terminar toda la masa"),
-            Step("Pica finalmente las cebolletas y ponlas a dorar en una sarten con aceite. Saltea hasta que se dore a fuego medio-alto", 7),
+            Step("Pica finalmente las cebolletas y ponlas a dorar in una sartén con aceite. Saltea hasta que se dore a fuego medio-alto", 7),
             Step("Agrega una cucharada de harina previamente reserbada y mezcla, incorpora las habas y saltea"),
             Step("Deja que se temple y rellena las creepes. Sirve con las verduras")
         ),
-        categories = listOf(RecipeCategory.LEGUMBRES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.HUEVOS)
+        categories = listOf(RecipeCategory.LEGUMBRES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.HUEVOS),
+        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN, Allergen.HUEVOS)
     ),
     Recipe(
         id = "6",
@@ -190,29 +221,30 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 22,
         servings = 3,
         ingredients = listOf(
-            "500 g de carne de ternera",
-            "250 g de carne de cerdo",
-            "1 kg de patatas",
-            "1 vaso de leche",
-            "1 cebolla",
-            "2 dientes de ajo",
-            "18 aceitunas",
-            "1/2 litro de salsa de tomate",
-            "50 g de queso rallado",
-            "Aceite de oliva virgen extra",
-            "Pimienta negra",
-            "Sal",
-            "Perejil"
+            RecipeIngredient("Carne de ternera", "500 g"),
+            RecipeIngredient("Carne de cerdo", "250 g"),
+            RecipeIngredient("Patatas", "1 kg"),
+            RecipeIngredient("Leche", "1 vaso"),
+            RecipeIngredient("Cebolla", "1"),
+            RecipeIngredient("Dientes de ajo", "2"),
+            RecipeIngredient("Aceitunas", "18"),
+            RecipeIngredient("Salsa de tomate", "1/2 litro"),
+            RecipeIngredient("Queso rallado", "50 g"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Pimienta negra"),
+            RecipeIngredient("Sal"),
+            RecipeIngredient("Perejil")
         ),
         steps = listOf(
             Step("Pela las patatas, trocealas y ponlas a cocer durante 17 minutos en una cazuela con agua y sal.",17),
             Step("Trocea las carnes en daditos y salpiméntalas"),
-            Step("Pica finamente la cebolla y los dientes de ajo, ponlos a dorar en una cazuela con un poco de aceite. Cuando se dore un poco añade la carne y las aceitunas picadas. Rehoga brevemente y vierte la salsa de tomate. Añadi pimienta. Mezcla todo y sirve en una fuente apta para horno"),
+            Step("Pica finamente la cebolla y los dientes de ajo, ponlos a dorar in una cazuela con un poco de aceite. Cuando se dore un poco añade la carne y las aceitunas picadas. Rehoga brevemente y vierte la salsa de tomate. Añadi pimienta. Mezcla todo y sirve en una fuente apta para horno"),
             Step("Cuando las patatas estén cocidas escúrrelas y pásalas por el pasapuré, vierte la lecha salpimenta, espolvorea con perejil y mezcla bien."),
             Step("Cubre la carne con el puré, espolvorea con el queso rallado."),
             Step("Gratina en el horno durante 5 minutos", 5)
         ),
-        categories = listOf(RecipeCategory.CARNE)
+        categories = listOf(RecipeCategory.CARNE),
+        allergens = listOf(Allergen.LACTEOS)
     ),
     Recipe(
         id = "7",
@@ -222,18 +254,18 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 22,
         servings = 2,
         ingredients = listOf(
-            "100 g de arroz",
-            "2 cebolletas",
-            "1 puerro",
-            "1 tomate maduro",
-            "1 zanahoria",
-            "150 g de judías verdes",
-            "100 g de maíz cocido",
-            "1,5 l de caldo de verduras",
-            "2 huevos cocidos",
-            "Aceite de oliva virgen extra",
-            "Unas hebras de azafrán",
-            "Sal"
+            RecipeIngredient("Arroz", "100 g"),
+            RecipeIngredient("Cebolletas", "2"),
+            RecipeIngredient("Puerro", "1"),
+            RecipeIngredient("Tomate maduro", "1"),
+            RecipeIngredient("Zanahoria", "1"),
+            RecipeIngredient("Judías verdes", "150 g"),
+            RecipeIngredient("Maíz cocido", "100 g"),
+            RecipeIngredient("Caldo de verduras", "1,5 l"),
+            RecipeIngredient("Huevos cocidos", "2"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Azafrán", "Unas hebras"),
+            RecipeIngredient("Sal")
         ),
         steps = listOf(
             Step("Pica fina toda la verdura."),
@@ -242,7 +274,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Pela y pica los huevos e incorporalos."),
             Step("Sirve en una sopera.")
         ),
-        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.SOPAS_CREMAS, RecipeCategory.HUEVOS)
+        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.SOPAS_CREMAS, RecipeCategory.HUEVOS),
+        allergens = listOf(Allergen.HUEVOS)
     ),
     Recipe(
         id = "8",
@@ -252,31 +285,32 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 25,
         servings = 3,
         ingredients = listOf(
-            "1 conejo de 1,200 kg",
-            "6 alcachofas",
-            "4 dientes de ajo",
-            "2 cebolletas",
-            "2 pimientos verdes",
-            "1 cucharada de harina",
-            "1 vaso de vino blanco",
-            "2 vasos de agua",
-            "Aceite de oliva virgen extra",
-            "Pimienta",
-            "Sal"
+            RecipeIngredient("Conejo", "1,200 kg"),
+            RecipeIngredient("Alcachofas", "6"),
+            RecipeIngredient("Dientes de ajo", "4"),
+            RecipeIngredient("Cebolletas", "2"),
+            RecipeIngredient("Pimientos verdes", "2"),
+            RecipeIngredient("Harina", "1 cucharada"),
+            RecipeIngredient("Vino blanco", "1 vaso"),
+            RecipeIngredient("Agua", "2 vasos"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Pimienta"),
+            RecipeIngredient("Sal")
         ),
         steps = listOf(
             Step("Trocea el conejo y salpimentalo."),
             Step("Pela los aojos y cortalos por la mitad"),
-            Step("Dora los ajos en una sarten con poco aceite durante un minuto a fuego medio-alto.", 1),
+            Step("Dora los ajos in una sarten con poco aceite durante un minuto a fuego medio-alto.", 1),
             Step("Añade the conejo y doralo a fuego medio-alto durante 12 minutos.", 12),
             Step("Agrega una cucharada de harina y mezcla bien hasta que se disuelva."),
             Step("Limpia las alcachofas, retirando el tallo, las hojas externas y la parte alta de las hojas, trocea en cuatro e incorporalas a la cazuela."),
             Step("Vierte el vino y el agua a fuego medio-alto durante 30 minutos."),
             Step("Trocea los pimientos en rectangulos y las cebollas en tiras."),
-            Step("Pon las verduras a dorar en una sarten a fuego medio unos 12 minutos.", 12),
-            Step("Sirve el conejo en una fuente y coloca encima los pimientos y las cebolletas salteadas.")
+            Step("Pon las verduras a dorar in una sarten a fuego medio unos 12 minutos.", 12),
+            Step("Sirve el conejo en una fuente and coloca encima los pimientos y las cebolletas salteadas.")
         ),
-        categories = listOf(RecipeCategory.CARNE, RecipeCategory.VERDURAS_HORTALIZAS)
+        categories = listOf(RecipeCategory.CARNE, RecipeCategory.VERDURAS_HORTALIZAS),
+        allergens = listOf(Allergen.GLUTEN, Allergen.SULFITOS)
     ),
     Recipe(
         id = "9",
@@ -286,25 +320,26 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 25,
         servings = 2,
         ingredients = listOf(
-            "600 g de lomo fresco",
-            "400 g de champiñon en conserva",
-            "2 cebollas",
-            "1 vaso de leche",
-            "2 huevos",
-            "Harina",
-            "Perejil",
-            "Aceite de oliva virgen extra",
-            "Pimienta",
-            "Sal"
+            RecipeIngredient("Lomo fresco", "600 g"),
+            RecipeIngredient("Champiñón en conserva", "400 g"),
+            RecipeIngredient("Cebollas", "2"),
+            RecipeIngredient("Leche", "1 vaso"),
+            RecipeIngredient("Huevos", "2"),
+            RecipeIngredient("Harina"),
+            RecipeIngredient("Perejil"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Pimienta"),
+            RecipeIngredient("Sal")
         ),
         steps = listOf(
-            Step("Pica finamente las cebollas y ponlas a dorar en una cazuela con un poco de aceite a fuego medio durante 12 minutos.", 12),
+            Step("Pica finamente las cebollas y ponlas a dorar in una cazuela con un poco de aceite a fuego medio durante 12 minutos.", 12),
             Step("Cuando esté bien dorada vierte la leche y los champiñones y deja reducir"),
             Step("Mientras tanto, filetea el lomo y salpimenta, pasa los filetes por harina y huevo batido."),
-            Step("Frie el lomo brevemente (vuelta y vuelta) en una sartén con aceite. Escurrelos sobre un papel de cocina.", 12),
+            Step("Frie el lomo brevemente (vuelta y vuelta) in una sartén con aceite. Escurrelos sobre un papel de cocina.", 12),
             Step("Sirve el lomo acompañado de los champiñones y espolvorea con perejil picado.")
         ),
-        categories = listOf(RecipeCategory.CARNE, RecipeCategory.HUEVOS)
+        categories = listOf(RecipeCategory.CARNE, RecipeCategory.HUEVOS),
+        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN)
     ),
     Recipe(
         id = "10",
@@ -314,21 +349,21 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 13,
         servings = 4,
         ingredients = listOf(
-            "1/2 kg de patatas",
-            "1 cebollas",
-            "1/2 pimiento verde",
-            "4 huevos",
-            "Aceite de oliva virgen extra",
-            "Sal"
+            RecipeIngredient("Patatas", "1/2 kg"),
+            RecipeIngredient("Cebollas", "1"),
+            RecipeIngredient("Pimiento verde", "1/2"),
+            RecipeIngredient("Huevos", "4"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Sal")
         ),
         steps = listOf(
             Step("Pela las cebollas y las patatas."),
-            Step("Pica las cebollas en trozos no muy pequeños y ponlas a dorar duarnte 15 minutos a fuego medio-bajo en una sartén con abundante aceite."),
+            Step("Pica las cebollas en trozos no muy pequeños y ponlas a dorar duarnte 15 minutos a fuego medio-bajo in una sartén con abundante aceite."),
             Step("Mientras tanto, pica las patatas en dados, sazonalas y añadelas a la sartén. Agrega el pimiento picado en dados y frie todo a fuego medio, removiendo de vez en cuando, hasta que se dore todo un poco."),
             Step("Retiralas y escurrelas."),
             Step("Prepara un recipiente y bate 4 huevos."),
             Step("Agrega a cada uno la mitad de las patatas, cebollas y pimiento."),
-            Step("Pon un poco de aceite en una sartén y vierte la mezcla anterior. Cuaja el huevo, primero a fuego vivo y despues un poco más suave. Voltea la tortilla para que se haga por los dos lados.")
+            Step("Pon un poco de aceite in una sartén y vierte la mezcla anterior. Cuaja el huevo, primero a fuego vivo y despues un poco más suave. Voltea la tortilla para que se haga por los dos lados.")
         ),
         categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.VERDURAS_HORTALIZAS)
     ),
@@ -340,26 +375,27 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 34,
         servings = 4,
         ingredients = listOf(
-            "200 g de arroz",
-            "2 cebolletas",
-            "10 ajos frescos",
-            "3 patatas",
-            "2 vasos de vino blanco",
-            "2-3 vasos de caldo",
-            "1 huevo cocido",
-            "Aceite de oliva virgen extra",
-            "Sal",
-            "Perejil"
+            RecipeIngredient("Arroz", "200 g"),
+            RecipeIngredient("Cebolletas", "2"),
+            RecipeIngredient("Ajos frescos", "10"),
+            RecipeIngredient("Patatas", "3"),
+            RecipeIngredient("Vino blanco", "2 vasos"),
+            RecipeIngredient("Caldo", "2-3 vasos"),
+            RecipeIngredient("Huevo cocido", "1"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Sal"),
+            RecipeIngredient("Perejil")
         ),
         steps = listOf(
-            Step("Pela las patatas, cortalas en rodajas y frielas a fuego fuerte en una sartén hasta que se doren durante 12 minutos a fuego medio.", 12),
-            Step("Pica las cebolletas y corta los ajos frescos en trozos de unos 5 centimetros. Dóralos en una cazuela amplia y baja con 4 cucharadas de aceite unos 5 minutos a fuego medio-alto.", 5),
+            Step("Pela las patatas, cortalas en rodajas y frielas a fuego fuerte in una sartén hasta que se doren durante 12 minutos a fuego medio.", 12),
+            Step("Pica las cebolletas y corta los ajos frescos en trozos de unos 5 centimetros. Dóralos in una cazuela amplia y baja con 4 cucharadas de aceite unos 5 minutos a fuego medio-alto.", 5),
             Step("Incorporalas patatas y rehoga."),
             Step("Cuando esté rehogado añade el arroz, mezcla bien y añade el vino blanco y el caldo. Sazona y espolvorea perejil picado. Deja cocer durante 17 minutos.", 17),
             Step("Pela el huevo cocido y córtalo en 4."),
             Step("Decora la cazuela con los trozos de huevo y una rama de perejil.")
         ),
-        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.HUEVOS)
+        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.HUEVOS),
+        allergens = listOf(Allergen.HUEVOS, Allergen.SULFITOS)
     ),
     Recipe(
         id = "12",
@@ -369,30 +405,31 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 13,
         servings = 4,
         ingredients = listOf(
-            "2 orejas de cerdo",
-            "3 cebolletas",
-            "1 cabeza de ajos",
-            "2 dientes de aojo",
-            "250 g de tallarines",
-            "1 pimiento morrón",
-            "2 pimientos verdes",
-            "2 cucharaditas de pimentón",
-            "Aceite de oliva virgen extra",
-            "Agua y sal",
-            "1/2 litro de salsa de tomate"
+            RecipeIngredient("Orejas de cerdo", "2"),
+            RecipeIngredient("Cebolletas", "3"),
+            RecipeIngredient("Cabeza de ajos", "1"),
+            RecipeIngredient("Dientes de ajo", "2"),
+            RecipeIngredient("Tallarines", "250 g"),
+            RecipeIngredient("Pimiento morrón", "1"),
+            RecipeIngredient("Pimientos verdes", "2"),
+            RecipeIngredient("Pimentón", "2 cucharaditas"),
+            RecipeIngredient("Aceite de oliva virgen extra"),
+            RecipeIngredient("Agua y sal"),
+            RecipeIngredient("Salsa de tomate", "1/2 litro")
         ),
         steps = listOf(
             Step("Pon una cazuela al fuego con abundante agua, un chorro de aceite y una pizca de sal."),
             Step("Cuando empiece a hervir, añade los tallarines y cuécelos durante 10 minutos.",10),
             Step("Escurre y refrescalos."),
-            Step("Pon agua en una hoya a presión, agrega 1 cebolleta, la cabeza de ajos, una pizca de sal y las orejas del cerdo. Tapa la hoya y deja cocer durante 10 minutos desde que empiece  salir el vapor", 10),
+            Step("Pon agua in una hoya a presión, agrega 1 cebolleta, la cabeza de ajos, una pizca de sal y las orejas del cerdo. Tapa la hoya y deja cocer durante 10 minutos desde que empiece  salir el vapor", 10),
             Step("Retira las orejas, deja que se templen y trocealas."),
             Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas."),
-            Step("Pon todo a pochar en una sartén con aceite."),
+            Step("Pon todo a pochar in una sartén con aceite."),
             Step("Cuando esté bien pochado, añade un par de cucharaditas de pimentón, mezcla bien, agrega la salsa de tomate y los trozos de oreja de cerdo."),
             Step("Añade la pasta a la sartén, mezcla y sirve en una fuente amplia."),
         ),
-        categories = listOf(RecipeCategory.PASTAS, RecipeCategory.CARNE)
+        categories = listOf(RecipeCategory.PASTAS, RecipeCategory.CARNE),
+        allergens = listOf(Allergen.GLUTEN)
     ),
     Recipe(
         id = "13",
@@ -402,26 +439,27 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 40,
         servings = 8,
         ingredients = listOf(
-            "400 g de queso de untar",
-            "200 g de galletas(especiales diabéticos)",
-            "150 g de mantequilla a punto de pomada",
-            "300 mg de nata líquida",
-            "1 cucharadita de sirópe de ágave",
-            "6 hojas de gelatina",
-            "agua",
-            "Mermelada de frambuesa",
-            "4-6 fresas",
-            "Hojas de menta"
+            RecipeIngredient("Queso de untar", "400 g"),
+            RecipeIngredient("Galletas(especiales diabéticos)", "200 g"),
+            RecipeIngredient("Mantequilla a punto de pomada", "150 g"),
+            RecipeIngredient("Nata líquida", "300 mg"),
+            RecipeIngredient("Sirópe de ágave", "1 cucharadita"),
+            RecipeIngredient("Hojas de gelatina", "6"),
+            RecipeIngredient("Agua"),
+            RecipeIngredient("Mermelada de frambuesa"),
+            RecipeIngredient("Fresas", "4-6"),
+            RecipeIngredient("Hojas de menta")
         ),
         steps = listOf(
             Step("Tritura las galletas y colócalas en un bol. Añade la mantequilla y mezcla bien. Cubre el fondo del molde e introdúcelo en el frigorífico para que la masa endurezca un poco."),
-            Step("Pon la gelatina a remojo en un bol con agua fría hasta que se ablande."),
+            Step("Pon la gelatina a remojo in un bol con agua fría hasta que se ablande."),
             Step("Calienta la mitad de la nata, introduce las hojas de gelatina escurridas y espera a que se disuelvan. Agrega el resto de la nata, el queso, la cucharadita de sirope de ágave y mezcla bien con una varilla de mano."),
             Step("Vierte la mezcla sobre la base de galletas e introduce la tarta en el frigorífico hasta que endurezca (40 minutos aproximadamente).", 40),
             Step("Calienta la mermelada para que se ablande un poco, cuélala y cubre la superficie de la tarta. Desmolda y decórala con unas fresas y unas hojas de menta."),
             Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas.")
         ),
-        categories = listOf(RecipeCategory.DIABETICOS)
+        categories = listOf(RecipeCategory.DIABETICOS),
+        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN)
     ),
     Recipe(
         id = "14",
@@ -431,24 +469,25 @@ val DEFAULT_RECIPES = listOf(
         prepTime = 148,
         servings = 4,
         ingredients = listOf(
-            "230 g de arroz glutinoso (tipo sushi)",
-            "25 ml de aceite de oliva virgen extra",
-            "15 ml de sirope de arce",
-            "5 g de sal",
-            "4 g de levadura seca en polvo",
-            "150 ml de agua",
-            "Romero, tomillo y menta (para decorar)"
+            RecipeIngredient("Arroz glutinoso (tipo sushi)", "230 g"),
+            RecipeIngredient("Aceite de oliva virgen extra", "25 ml"),
+            RecipeIngredient("Sirope de arce", "15 ml"),
+            RecipeIngredient("Sal", "5 g"),
+            RecipeIngredient("Levadura seca en polvo", "4 g"),
+            RecipeIngredient("Agua", "150 ml"),
+            RecipeIngredient("Romero, tomillo y menta (para decorar)")
         ),
         steps = listOf(
-            Step("Pon el arroz en un bol, cúbrelo con agua y ponlo a remojo desde la víspera."),
-            Step("Escúrrelo y colócalo en un vaso americano. Añade el aceite, el sirope de arce, la sal y la levadura."),
+            Step("Pon el arroz in un bol, cúbrelo con agua y ponlo a remojo desde la víspera."),
+            Step("Escúrrelo y colócalo in un vaso americano. Añade el aceite, el sirope de arce, la sal y la levadura."),
             Step("Calienta el agua y viértela encima."),
             Step("Tritura los ingredientes hasta conseguir un puré homogéneo y cuela la mezcla."),
             Step("Para para que luego sea más fácil desmoldar el pan, cubre un molde de papel de aluminio con papel sulfurizado (de horno)."),
-            Step("Vierte la mezcla en el molde y deja que fermente en el horno a 40ºC durante 2 horas y media hasta que doble su tamaño. A la hora y cuarto, pulverízalo con un poco de agua.",120),
+            Step("Vierte la mezcla in el molde y deja que fermente in el horno a 40ºC durante 2 horas y media hasta que doble su tamaño. A la hora y cuarto, pulverízalo con un poco de agua.",120),
             Step("Sube la temperatura del horno a 180º, pulveriza el pan con otro poco de agua y hornéalo durante 25-30 minutos.", 28),
             Step("Deja que se enfríe y sirve. Adorna los platos con unas ramas de tomillo, de romero y unas hojas de menta.")
         ),
-        categories = listOf(RecipeCategory.CELIACOS)
+        categories = listOf(RecipeCategory.CELIACOS),
+        allergens = emptyList()
     ),
 )

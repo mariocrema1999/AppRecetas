@@ -48,6 +48,17 @@
                 android:textColor="@android:color/secondary_text_light"
                 tools:text="Clásica receta italiana con huevo, queso parmesano y panceta crujiente" />
 
+            <!-- Allergen Icons Container -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/llAllergensContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="2dp"
+                app:chipSpacingVertical="2dp">
+                <!-- Allergen icons will be added here dynamically as ImageViews -->
+            </com.google.android.material.chip.ChipGroup>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

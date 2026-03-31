@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             val matchesCategories = if (selectedCategories.isEmpty()) {
                 true
             } else {
-                selectedCategories.any { it in recipeCategories }
+                selectedCategories.all { it in recipeCategories }
             }
             
             val matchesMyRecipes = if (isShowingOnlyMyRecipes) {

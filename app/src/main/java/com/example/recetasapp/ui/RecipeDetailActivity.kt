@@ -1,6 +1,5 @@
 package com.example.recetasapp.ui
 
-import android.R.id.checkbox
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -47,8 +46,30 @@ class RecipeDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailTime).text = "${recipe.prepTime} min"
         findViewById<TextView>(R.id.tvDetailServings).text = "${recipe.servings}"
 
+        // Allergens
+        val allergensContainer = findViewById<LinearLayout>(R.id.llDetailAllergensContainer)
+        recipe.allergens?.forEach { allergen ->
+            val imageView = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    resources.getDimensionPixelSize(R.dimen.allergen_icon_size),
+                    resources.getDimensionPixelSize(R.dimen.allergen_icon_size)
+                ).apply {
+                    setMargins(0, 0, resources.getDimensionPixelSize(R.dimen.allergen_icon_margin), 0)
+                }
+                setImageResource(allergen.iconResId)
+                contentDescription = allergen.displayName
+            }
+            allergensContainer.addView(imageView)
+        }
+
         // Ingredients
-        val ingredientsText = recipe.ingredients.joinToString("\n") { "• $it" }
+        val ingredientsText = recipe.ingredients.joinToString("\n") { ingredient ->
+            if (ingredient.quantity.isNullOrBlank()) {
+                "• ${ingredient.name}"
+            } else {
+                "• ${ingredient.name}: ${ingredient.quantity}"
+            }
+        }
         findViewById<TextView>(R.id.tvIngredientsList).text = ingredientsText
 
         // Image
@@ -75,7 +96,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
 
         val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
-
         if (step.timeMinutes != null && step.timeMinutes > 0) {
             timerContainer.visibility = View.VISIBLE
             setupTimer(view, step.timeMinutes * 60L)
@@ -90,10 +110,18 @@ class RecipeDetailActivity : AppCompatActivity() {
         val tvTimer = view.findViewById<TextView>(R.id.tvTimer)
         val btnToggle = view.findViewById<ImageButton>(R.id.btnTimerToggle)
         val btnReset = view.findViewById<ImageButton>(R.id.btnTimerReset)
+        val checkbox = view.findViewById<CheckBox>(R.id.tvStepCheckbox)
 
         var timeLeft = totalSeconds
         var isRunning = false
         var timer: CountDownTimer? = null
+
+        fun stopTimer() {
+            timer?.cancel()
+            isRunning = false
+            btnToggle.setImageResource(android.R.drawable.ic_media_play)
+            audioManager.stop()
+        }
 
         fun updateText() {
             val m = timeLeft / 60
@@ -105,11 +133,11 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         btnToggle.setOnClickListener {
             if (isRunning) {
-                timer?.cancel()
-                isRunning = false
-                btnToggle.setImageResource(android.R.drawable.ic_media_play)
-                audioManager.stop()
+                stopTimer()
             } else {
+                // Si se vuelve a retomar el tiempo dandole al play que se desmarque el checkbox
+                checkbox.isChecked = false
+                
                 isRunning = true
                 btnToggle.setImageResource(android.R.drawable.ic_media_pause)
 
@@ -124,8 +152,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
                     override fun onFinish() {
                         timeLeft = 0
-                        val checkbox = view.findViewById<CheckBox>(R.id.tvStepCheckbox)
-                        checkbox.isChecked = !checkbox.isChecked
+                        checkbox.isChecked = true
                         updateText()
                         isRunning = false
                         btnToggle.setImageResource(android.R.drawable.ic_media_play)
@@ -135,13 +162,17 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         }
 
+        // Si se marca el checkbox manualmente mientras el tiempo corre, se para.
+        checkbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && isRunning) {
+                stopTimer()
+            }
+        }
+
         btnReset.setOnClickListener {
-            timer?.cancel()
-            isRunning = false
+            stopTimer()
             timeLeft = totalSeconds
             updateText()
-            btnToggle.setImageResource(android.R.drawable.ic_media_play)
-            audioManager.stop()
         }
     }
 

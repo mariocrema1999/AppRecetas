@@ -53,7 +53,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Allergen Icons Container -->
+            <LinearLayout
+                android:id="@+id/llDetailAllergensContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:gravity="start">
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -22,8 +22,14 @@ class RecipeManager(private val context: Context) {
         val file = File(context.filesDir, fileName)
         if (!file.exists()) return mutableListOf()
 
-        val json = file.readText()
-        val type = object : TypeToken<MutableList<Recipe>>() {}.type
-        return gson.fromJson(json, type) ?: mutableListOf()
+        return try {
+            val json = file.readText()
+            val type = object : TypeToken<MutableList<Recipe>>() {}.type
+            gson.fromJson(json, type) ?: mutableListOf()
+        } catch (e: Exception) {
+            // Si el archivo tiene un formato antiguo o está corrupto, lo borramos para evitar crashes
+            file.delete()
+            mutableListOf()
+        }
     }
 }

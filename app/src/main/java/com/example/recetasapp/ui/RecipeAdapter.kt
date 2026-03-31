@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
 import com.bumptech.glide.Glide
+import com.google.android.material.chip.ChipGroup
 
 class RecipeAdapter(
     private var _recipes: List<Recipe>,
@@ -30,6 +31,7 @@ class RecipeAdapter(
         val description: TextView = view.findViewById(R.id.tvRecipeDescription)
         val prepTime: TextView = view.findViewById(R.id.tvPrepTime)
         val servings: TextView = view.findViewById(R.id.tvServings)
+        val allergensContainer: ChipGroup = view.findViewById(R.id.llAllergensContainer)
 
         init {
             view.setOnCreateContextMenuListener(this)
@@ -60,6 +62,21 @@ class RecipeAdapter(
         holder.description.text = recipe.description
         holder.prepTime.text = "${recipe.prepTime} min"
         holder.servings.text = "${recipe.servings} porciones"
+
+        // Clear previous allergen icons
+        holder.allergensContainer.removeAllViews()
+        
+        // Add allergen icons
+        // Use ?. to avoid NullPointerException if allergens is null (can happen when loading old JSON data)
+        recipe.allergens?.forEach { allergen ->
+            val imageView = ImageView(holder.itemView.context).apply {
+                val iconSize = holder.itemView.context.resources.getDimensionPixelSize(R.dimen.allergen_icon_size)
+                layoutParams = ViewGroup.LayoutParams(iconSize, iconSize)
+                setImageResource(allergen.iconResId)
+                contentDescription = allergen.displayName
+            }
+            holder.allergensContainer.addView(imageView)
+        }
 
         Glide.with(holder.itemView.context)
             .load(recipe.image)

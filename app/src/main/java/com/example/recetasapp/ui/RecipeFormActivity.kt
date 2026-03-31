@@ -1,10 +1,12 @@
 package com.example.recetasapp.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -13,8 +15,10 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.recetasapp.R
+import com.example.recetasapp.model.Allergen
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.RecipeCategory
+import com.example.recetasapp.model.RecipeIngredient
 import com.example.recetasapp.model.Step
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -25,7 +29,7 @@ import java.util.UUID
 
 class RecipeFormActivity : AppCompatActivity() {
 
-    private val ingredients = mutableListOf<String>()
+    private val ingredients = mutableListOf<RecipeIngredient>()
     private val steps = mutableListOf<Step>()
     private var imageInternalPath: String? = null
 
@@ -47,6 +51,21 @@ class RecipeFormActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupInputs()
+        setupAllergenChips()
+    }
+
+    private fun setupAllergenChips() {
+        val cgAllergens = findViewById<ChipGroup>(R.id.cgAllergens)
+        Allergen.values().forEach { allergen ->
+            val chip = Chip(this).apply {
+                text = allergen.displayName
+                isCheckable = true
+                tag = allergen
+                setChipIconResource(allergen.iconResId)
+                isChipIconVisible = true
+            }
+            cgAllergens.addView(chip)
+        }
     }
 
     private fun minPreparationTime(steps: List<Step>): Int {
@@ -79,6 +98,7 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupInputs() {
         val etName = findViewById<EditText>(R.id.etRecipeName)
         val etDesc = findViewById<EditText>(R.id.etRecipeDescription)
@@ -91,6 +111,7 @@ class RecipeFormActivity : AppCompatActivity() {
         val etTime = findViewById<EditText>(R.id.etPrepTime)
         val etServings = findViewById<EditText>(R.id.etServings)
 
+        val etIngredientQuantity = findViewById<EditText>(R.id.etIngredientQuantity)
         val etIngredient = findViewById<EditText>(R.id.etNewIngredient)
         val btnAddIng = findViewById<ImageButton>(R.id.btnAddIngredient)
         val tvIngPreview = findViewById<TextView>(R.id.tvIngredientsPreview)
@@ -101,6 +122,7 @@ class RecipeFormActivity : AppCompatActivity() {
         val tvStepPreview = findViewById<TextView>(R.id.tvStepsPreview)
 
         val cgCategories = findViewById<ChipGroup>(R.id.cgCategories)
+        val cgAllergens = findViewById<ChipGroup>(R.id.cgAllergens)
         val btnSave = findViewById<Button>(R.id.btnSaveRecipe)
 
         fun validate() {
@@ -111,10 +133,15 @@ class RecipeFormActivity : AppCompatActivity() {
 
         btnAddIng.setOnClickListener {
             val text = etIngredient.text.toString()
+            val quantity = etIngredientQuantity.text.toString()
+            val ingredient = RecipeIngredient(text, quantity)
+
             if (text.isNotBlank()) {
-                ingredients.add(text)
+                var preview = "$text, $quantity\n"
+                ingredients.add(ingredient)
                 etIngredient.setText("")
-                tvIngPreview.text = ingredients.joinToString("\n") { "• $it" }
+                etIngredientQuantity.setText("")
+                tvIngPreview.text = tvIngPreview.text.toString() + preview
             }
         }
 
@@ -148,17 +175,28 @@ class RecipeFormActivity : AppCompatActivity() {
                 if (findViewById<Chip>(R.id.chipDiabeticos).isChecked) selectedCategories.add(RecipeCategory.DIABETICOS)
                 if (findViewById<Chip>(R.id.chipPostres).isChecked) selectedCategories.add(RecipeCategory.POSTRES)
 
+                val selectedAllergens = mutableListOf<Allergen>()
+                for (i in 0 until cgAllergens.childCount) {
+                    val chip = cgAllergens.getChildAt(i) as Chip
+                    if (chip.isChecked) {
+                        selectedAllergens.add(chip.tag as Allergen)
+                    }
+                }
+
+                val defaultImagePath = "android.resource://${packageName}/drawable/fotopredeterminada"
+                val finalImage = imageInternalPath ?: defaultImagePath
 
                 val recipe = Recipe(
                     id = UUID.randomUUID().toString(),
                     name = etName.text.toString(),
                     description = etDesc.text.toString(),
-                    image = imageInternalPath ?: "https://via.placeholder.com/150",
+                    image = finalImage,
                     prepTime = prepTime,
                     servings = etServings.text.toString().toIntOrNull() ?: 1,
                     ingredients = ingredients,
                     steps = steps,
-                    categories = selectedCategories
+                    categories = selectedCategories,
+                    allergens = selectedAllergens
                 )
 
                 val resultIntent = Intent()

@@ -131,8 +131,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Carne" />
 
                 <com.google.android.material.chip.Chip
@@ -140,8 +139,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Pescado" />
 
                 <com.google.android.material.chip.Chip
@@ -149,8 +147,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Arroces" />
 
                 <com.google.android.material.chip.Chip
@@ -158,8 +155,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Verduras y Hortalizas" />
 
                 <com.google.android.material.chip.Chip
@@ -167,8 +163,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Legumbres" />
 
                 <com.google.android.material.chip.Chip
@@ -176,8 +171,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Huevos" />
 
                 <com.google.android.material.chip.Chip
@@ -185,8 +179,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Pastas" />
 
                 <com.google.android.material.chip.Chip
@@ -194,8 +187,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Sopas y Cremas" />
 
                 <com.google.android.material.chip.Chip
@@ -203,8 +195,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Para Celíacos" />
 
                 <com.google.android.material.chip.Chip
@@ -212,8 +203,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Para Diabéticos" />
 
                 <com.google.android.material.chip.Chip
@@ -221,10 +211,25 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-
+                    android:checkable="true"
                     android:text="Postres" />
 
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alérgenos"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgAllergens"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:chipSpacingVertical="8dp">
+                <!-- Allergen chips will be added programmatically or defined here -->
             </com.google.android.material.chip.ChipGroup>
 
             <TextView
@@ -247,6 +252,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Nuevo ingrediente"/>
+                <EditText
+                    android:id="@+id/etIngredientQuantity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Cantidad/peso"/>
                     
                 <ImageButton
                     android:id="@+id/btnAddIngredient"
