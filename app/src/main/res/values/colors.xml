@@ -15,5 +15,6 @@
     <color name="secondaryColor">#8AC850</color>
     <color name="menuColor">#FFFFE3</color>
     <color name="iconosColor">#FFDBBB</color>
+    <color name="bienvenido">#381E02</color>
 
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -100,7 +101,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<ExtendedFloatingActionButton>(R.id.fabMisRecetas).setOnClickListener {
             isShowingOnlyMyRecipes = !isShowingOnlyMyRecipes
-            // Opcional: Cambiar el texto o color del botón para indicar estado
             (it as ExtendedFloatingActionButton).text = if (isShowingOnlyMyRecipes) "Ver Todas" else "Mis recetas"
             filterRecipes(searchView.query.toString())
         }
@@ -111,6 +111,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkEmptyState()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                val intent = Intent(this, UserProfileActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_preferences -> {
+                // Aquí iría la lógica para "Mis preferencias" en el futuro
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun filterRecipes(query: String?) {

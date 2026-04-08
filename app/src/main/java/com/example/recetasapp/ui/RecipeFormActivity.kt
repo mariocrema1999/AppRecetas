@@ -152,7 +152,7 @@ class RecipeFormActivity : AppCompatActivity() {
                 steps.add(Step(desc, time))
                 etStepDesc.setText("")
                 etStepTime.setText("")
-                tvStepPreview.text = steps.mapIndexed { i, s -> "${i+1}. ${s.description}" }.joinToString("\n\n")
+                tvStepPreview.text = steps.mapIndexed { i, s -> "${i+1}. ${s.description}, ${s.timeMinutes} minutos" }.joinToString("\n\n")
                 validate()
             }
         }
