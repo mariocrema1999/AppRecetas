@@ -43,7 +43,7 @@ dependencies {
 
     // Glide para imágenes
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    
+
     // Gson para persistencia
     implementation("com.google.code.gson:gson:2.10.1")
 
@@ -51,7 +51,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
