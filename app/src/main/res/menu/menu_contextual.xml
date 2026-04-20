@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_edit"
+        android:title="Editar receta" />
     <item android:id="@+id/contextual1"
         android:title="Eliminar receta" />
 </menu>

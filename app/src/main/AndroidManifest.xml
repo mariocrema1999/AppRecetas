@@ -13,28 +13,21 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecetasApp">
+
         <activity
-            android:name=".ui.UserProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.ui.login.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login" />
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.RecipeDetailActivity"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.RecipeFormActivity"
-            android:parentActivityName=".ui.MainActivity" />
+
+        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.UserProfileActivity" />
+        <activity android:name=".ui.RecipeDetailActivity" android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.RecipeFormActivity" android:parentActivityName=".ui.MainActivity" />
     </application>
 
 </manifest>

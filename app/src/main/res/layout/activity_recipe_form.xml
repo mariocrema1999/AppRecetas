@@ -229,7 +229,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:chipSpacingVertical="8dp">
-                <!-- Allergen chips will be added programmatically or defined here -->
             </com.google.android.material.chip.ChipGroup>
 
             <TextView
@@ -239,7 +238,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Ingredient Input -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -268,13 +266,13 @@
                     android:src="@android:drawable/ic_input_add"/>
             </LinearLayout>
             
-            <TextView
-                android:id="@+id/tvIngredientsPreview"
+            <LinearLayout
+                android:id="@+id/llIngredientsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Steps Input -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -311,10 +309,11 @@
                     android:text="Añadir Paso"/>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvStepsPreview"
+            <LinearLayout
+                android:id="@+id/llStepsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_marginBottom="24dp"/>
 
             <Button

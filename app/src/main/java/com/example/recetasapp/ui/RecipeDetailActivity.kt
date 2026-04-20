@@ -1,5 +1,6 @@
 package com.example.recetasapp.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -10,6 +11,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.Step
@@ -85,28 +88,45 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun addStepView(number: Int, step: Step) {
         val view = LayoutInflater.from(this).inflate(R.layout.item_step, stepsContainer, false)
         val checkbox = view.findViewById<CheckBox>(R.id.tvStepCheckbox)
+        val internalContainer = view.findViewById<LinearLayout>(R.id.llStepInternalContainer)
+
+        // Colores
+        val originalColor = ContextCompat.getColor(this, R.color.menuColor)
+        val finishedColor = Color.parseColor("#BDBDBD") // Grisáceo
+
+        fun updateStepStyle(isFinished: Boolean) {
+            internalContainer?.setBackgroundColor(if (isFinished) finishedColor else originalColor)
+        }
 
         checkbox.isChecked = false
         view.findViewById<TextView>(R.id.tvStepTitle).text = "Paso $number"
         view.findViewById<TextView>(R.id.tvStepDescription).text = step.description
+
+        // Definimos la lógica base del checkbox
+        val onCheckLogic = { isChecked: Boolean ->
+            updateStepStyle(isChecked)
+        }
+
+        val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
+        if (step.timeMinutes != null && step.timeMinutes > 0) {
+            timerContainer.visibility = View.VISIBLE
+            setupTimer(view, step.timeMinutes * 60L, onCheckLogic)
+        } else {
+            timerContainer.visibility = View.GONE
+            checkbox.setOnCheckedChangeListener { _, isChecked ->
+                onCheckLogic(isChecked)
+            }
+        }
 
         // Hacer que al pulsar en el CardView cambie el estado del checkbox
         view.setOnClickListener {
             checkbox.isChecked = !checkbox.isChecked
         }
 
-        val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
-        if (step.timeMinutes != null && step.timeMinutes > 0) {
-            timerContainer.visibility = View.VISIBLE
-            setupTimer(view, step.timeMinutes * 60L)
-        } else {
-            timerContainer.visibility = View.GONE
-        }
-
         stepsContainer.addView(view)
     }
 
-    private fun setupTimer(view: View, totalSeconds: Long) {
+    private fun setupTimer(view: View, totalSeconds: Long, onCheckLogic: (Boolean) -> Unit) {
         val tvTimer = view.findViewById<TextView>(R.id.tvTimer)
         val btnToggle = view.findViewById<ImageButton>(R.id.btnTimerToggle)
         val btnReset = view.findViewById<ImageButton>(R.id.btnTimerReset)
@@ -135,7 +155,6 @@ class RecipeDetailActivity : AppCompatActivity() {
             if (isRunning) {
                 stopTimer()
             } else {
-                // Si se vuelve a retomar el tiempo dandole al play que se desmarque el checkbox
                 checkbox.isChecked = false
                 
                 isRunning = true
@@ -162,8 +181,11 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Si se marca el checkbox manualmente mientras el tiempo corre, se para.
         checkbox.setOnCheckedChangeListener { _, isChecked ->
+            // Ejecutamos la lógica de estilo y guardado (si la hubiera)
+            onCheckLogic(isChecked)
+            
+            // Si se marca manualmente mientras corre, paramos el cronómetro
             if (isChecked && isRunning) {
                 stopTimer()
             }

@@ -1,6 +1,8 @@
 package com.example.recetasapp.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.recetasapp.R
 import kotlinx.parcelize.Parcelize
 
@@ -47,9 +49,10 @@ data class RecipeIngredient(
     val quantity: String? = null
 ) : Parcelable
 
+@Entity(tableName = "recipes")
 @Parcelize
 data class Recipe(
-    val id: String,
+    @PrimaryKey val id: String,
     val name: String,
     val description: String,
     val image: String,
@@ -58,11 +61,10 @@ data class Recipe(
     val ingredients: List<RecipeIngredient>,
     val steps: List<Step>,
     val categories: List<RecipeCategory> = emptyList(),
-    val allergens: List<Allergen>? = emptyList()
+    val allergens: List<Allergen>? = emptyList(),
+    val creatorId: String? = null, // null para las predeterminadas
+    val isPublic: Boolean = true
 ) : Parcelable
-
-// TODO cuando hagamos la base de datos las recetas tendran un atributo nombre de usuario para que al clickar en mis recetas solo se muestren las recetas creadas por el usuario logeado.
-
 
 // Mock data
 val DEFAULT_RECIPES = listOf(
@@ -92,7 +94,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Sirve inmediatamente con más queso parmesano y pimiento negra por encima.")
         ),
         categories = listOf(RecipeCategory.PASTAS, RecipeCategory.HUEVOS, RecipeCategory.CARNE),
-        allergens = listOf(Allergen.GLUTEN, Allergen.HUEVOS, Allergen.LACTEOS)
+        allergens = listOf(Allergen.GLUTEN, Allergen.HUEVOS, Allergen.LACTEOS),
+        creatorId = null
     ),
     Recipe(
         id = "2",
@@ -120,7 +123,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Deja enfriar en el molde antes de desmoldar.", 10)
         ),
         categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.POSTRES),
-        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN)
+        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN),
+        creatorId = null
     ),
     Recipe(
         id = "3",
@@ -148,7 +152,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Mezcla todo justo antes de servir.")
         ),
         categories = listOf(RecipeCategory.VERDURAS_HORTALIZAS),
-        allergens = listOf(Allergen.LACTEOS, Allergen.FRUTOS_CASCARA)
+        allergens = listOf(Allergen.LACTEOS, Allergen.FRUTOS_CASCARA),
+        creatorId = null
     ),
     Recipe(
         id = "4",
@@ -176,7 +181,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Vierte el aceite sobre el pescado. Espolvorea con perejil picado.")
         ),
         categories = listOf(RecipeCategory.PESCADO, RecipeCategory.VERDURAS_HORTALIZAS),
-        allergens = listOf(Allergen.PESCADO)
+        allergens = listOf(Allergen.PESCADO),
+        creatorId = null
     ),
     Recipe(
         id = "5",
@@ -211,7 +217,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Deja que se temple y rellena las creepes. Sirve con las verduras")
         ),
         categories = listOf(RecipeCategory.LEGUMBRES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.HUEVOS),
-        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN, Allergen.HUEVOS)
+        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN, Allergen.HUEVOS),
+        creatorId = null
     ),
     Recipe(
         id = "6",
@@ -244,7 +251,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Gratina en el horno durante 5 minutos", 5)
         ),
         categories = listOf(RecipeCategory.CARNE),
-        allergens = listOf(Allergen.LACTEOS)
+        allergens = listOf(Allergen.LACTEOS),
+        creatorId = null
     ),
     Recipe(
         id = "7",
@@ -275,7 +283,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Sirve en una sopera.")
         ),
         categories = listOf(RecipeCategory.ARROCES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.SOPAS_CREMAS, RecipeCategory.HUEVOS),
-        allergens = listOf(Allergen.HUEVOS)
+        allergens = listOf(Allergen.HUEVOS),
+        creatorId = null
     ),
     Recipe(
         id = "8",
@@ -310,7 +319,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Sirve el conejo en una fuente and coloca encima los pimientos y las cebolletas salteadas.")
         ),
         categories = listOf(RecipeCategory.CARNE, RecipeCategory.VERDURAS_HORTALIZAS),
-        allergens = listOf(Allergen.GLUTEN, Allergen.SULFITOS)
+        allergens = listOf(Allergen.GLUTEN, Allergen.SULFITOS),
+        creatorId = null
     ),
     Recipe(
         id = "9",
@@ -339,7 +349,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Sirve el lomo acompañado de los champiñones y espolvorea con perejil picado.")
         ),
         categories = listOf(RecipeCategory.CARNE, RecipeCategory.HUEVOS),
-        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN)
+        allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN),
+        creatorId = null
     ),
     Recipe(
         id = "10",
@@ -365,7 +376,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Agrega a cada uno la mitad de las patatas, cebollas y pimiento."),
             Step("Pon un poco de aceite in una sartén y vierte la mezcla anterior. Cuaja el huevo, primero a fuego vivo y despues un poco más suave. Voltea la tortilla para que se haga por los dos lados.")
         ),
-        categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.VERDURAS_HORTALIZAS)
+        categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.VERDURAS_HORTALIZAS),
+        creatorId = null
     ),
     Recipe(
         id = "11",
@@ -395,7 +407,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Decora la cazuela con los trozos de huevo y una rama de perejil.")
         ),
         categories = listOf(RecipeCategory.ARROCES, RecipeCategory.HUEVOS),
-        allergens = listOf(Allergen.HUEVOS, Allergen.SULFITOS)
+        allergens = listOf(Allergen.HUEVOS, Allergen.SULFITOS),
+        creatorId = null
     ),
     Recipe(
         id = "12",
@@ -429,7 +442,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Añade la pasta a la sartén, mezcla y sirve en una fuente amplia."),
         ),
         categories = listOf(RecipeCategory.PASTAS, RecipeCategory.CARNE),
-        allergens = listOf(Allergen.GLUTEN)
+        allergens = listOf(Allergen.GLUTEN),
+        creatorId = null
     ),
     Recipe(
         id = "13",
@@ -459,7 +473,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas.")
         ),
         categories = listOf(RecipeCategory.DIABETICOS),
-        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN)
+        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN),
+        creatorId = null
     ),
     Recipe(
         id = "14",
@@ -488,6 +503,7 @@ val DEFAULT_RECIPES = listOf(
             Step("Deja que se enfríe y sirve. Adorna los platos con unas ramas de tomillo, de romero y unas hojas de menta.")
         ),
         categories = listOf(RecipeCategory.CELIACOS),
-        allergens = emptyList()
+        allergens = emptyList(),
+        creatorId = null
     ),
 )

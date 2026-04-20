@@ -39,10 +39,21 @@
                 tools:text="Pasta Carbonara" />
 
             <TextView
+                android:id="@+id/tvRecipeCreator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:textColor="@android:color/darker_gray"
+                android:visibility="gone"
+                tools:text="Por: usuario123"
+                tools:visibility="visible" />
+
+            <TextView
                 android:id="@+id/tvRecipeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:textColor="@android:color/secondary_text_light"
@@ -70,7 +81,8 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@android:drawable/ic_menu_recent_history"/>
+                    android:src="@android:drawable/ic_menu_recent_history"
+                    android:contentDescription="Tiempo"/>
                 
                 <TextView
                     android:id="@+id/tvPrepTime"
@@ -84,7 +96,8 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@android:drawable/ic_menu_myplaces"/>
+                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:contentDescription="Porciones"/>
                 
                 <TextView
                     android:id="@+id/tvServings"

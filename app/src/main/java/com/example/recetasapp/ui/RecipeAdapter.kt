@@ -28,6 +28,7 @@ class RecipeAdapter(
     inner class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {
         val image: ImageView = view.findViewById(R.id.ivRecipeImage)
         val name: TextView = view.findViewById(R.id.tvRecipeName)
+        val creator: TextView = view.findViewById(R.id.tvRecipeCreator)
         val description: TextView = view.findViewById(R.id.tvRecipeDescription)
         val prepTime: TextView = view.findViewById(R.id.tvPrepTime)
         val servings: TextView = view.findViewById(R.id.tvServings)
@@ -59,15 +60,19 @@ class RecipeAdapter(
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe = _recipes[position]
         holder.name.text = recipe.name
+        
+        if (recipe.creatorId != null) {
+            holder.creator.visibility = View.VISIBLE
+            holder.creator.text = "Por: ${recipe.creatorId}"
+        } else {
+            holder.creator.visibility = View.GONE
+        }
+
         holder.description.text = recipe.description
         holder.prepTime.text = "${recipe.prepTime} min"
         holder.servings.text = "${recipe.servings} porciones"
 
-        // Clear previous allergen icons
         holder.allergensContainer.removeAllViews()
-        
-        // Add allergen icons
-        // Use ?. to avoid NullPointerException if allergens is null (can happen when loading old JSON data)
         recipe.allergens?.forEach { allergen ->
             val imageView = ImageView(holder.itemView.context).apply {
                 val iconSize = holder.itemView.context.resources.getDimensionPixelSize(R.dimen.allergen_icon_size)

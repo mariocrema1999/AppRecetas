@@ -1,20 +1,30 @@
 package com.example.recetasapp.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.recetasapp.R
+import com.example.recetasapp.data.AppDatabase
 import com.example.recetasapp.model.Allergen
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.launch
 
 class UserProfileActivity : AppCompatActivity() {
     
     private lateinit var cgAllergens: ChipGroup
+    private lateinit var profileName: TextView
+    private lateinit var profileEmail: TextView
+    private lateinit var logoutButton: Button
+    
     private val PREFS_NAME = "user_prefs"
     private val KEY_ALLERGENS = "selected_allergens"
 
@@ -34,8 +44,37 @@ class UserProfileActivity : AppCompatActivity() {
             insets
         }
 
+        profileName = findViewById(R.id.profileName)
+        profileEmail = findViewById(R.id.profileEmail)
         cgAllergens = findViewById(R.id.cgAllergens)
+        logoutButton = findViewById(R.id.logoutButton)
+
+        loadUserData()
         setupAllergenChips()
+        
+        logoutButton.setOnClickListener {
+            val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            sharedPref.edit().clear().apply()
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+    }
+
+    private fun loadUserData() {
+        val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val username = sharedPref.getString("logged_user", null)
+        
+        if (username != null) {
+            val database = AppDatabase.getDatabase(this)
+            lifecycleScope.launch {
+                val user = database.userDao().getUserByUsername(username)
+                if (user != null) {
+                    profileName.text = user.displayName
+                    profileEmail.text = user.email
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -44,12 +45,17 @@ dependencies {
     // Glide para imágenes
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
-    // Gson para persistencia
+    // Gson para persistencia (seguiremos usándolo para listas complejas en Room)
     implementation("com.google.code.gson:gson:2.10.1")
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
