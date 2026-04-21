@@ -61,4 +61,26 @@ class RecipeModelTest {
 
         assertTrue(decodedRecipe.allergens == null)
     }
+
+    @Test
+    fun testRecipeDatabaseFields() {
+        val recipe = Recipe(
+            id = "db-test",
+            name = "Receta con Usuario",
+            description = "Desc",
+            image = "",
+            prepTime = 5,
+            servings = 1,
+            ingredients = emptyList(),
+            steps = emptyList(),
+            creatorId = "user_123", // Probamos el ID del creador
+            isPublic = false        // Probamos la privacidad
+        )
+
+        val json = gson.toJson(recipe)
+        val decodedRecipe: Recipe = gson.fromJson(json, Recipe::class.java)
+
+        assertEquals("user_123", decodedRecipe.creatorId)
+        assertEquals(false, decodedRecipe.isPublic)
+    }
 }
