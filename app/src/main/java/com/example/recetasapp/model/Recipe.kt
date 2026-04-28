@@ -472,7 +472,7 @@ val DEFAULT_RECIPES = listOf(
             Step("Calienta la mermelada para que se ablande un poco, cuélala y cubre la superficie de la tarta. Desmolda y decórala con unas fresas y unas hojas de menta."),
             Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas.")
         ),
-        categories = listOf(RecipeCategory.DIABETICOS),
+        categories = listOf(RecipeCategory.DIABETICOS, RecipeCategory.POSTRES),
         allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN),
         creatorId = null
     ),

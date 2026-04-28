@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
@@ -23,6 +22,8 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var audioManager: AudioManager
     private lateinit var stepsContainer: LinearLayout
+    private var completedStepsCount = 0
+    private var totalStepsCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +32,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         audioManager = AudioManager(this)
-        audioManager.playWelcome()
 
         val recipe = intent.getParcelableExtra<Recipe>("RECIPE")
 
@@ -80,6 +80,9 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         // Steps
         stepsContainer = findViewById(R.id.stepsContainer)
+        totalStepsCount = recipe.steps.size
+        completedStepsCount = 0
+        
         recipe.steps.forEachIndexed { index, step ->
             addStepView(index + 1, step)
         }
@@ -92,7 +95,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         // Colores
         val originalColor = ContextCompat.getColor(this, R.color.menuColor)
-        val finishedColor = Color.parseColor("#BDBDBD") // Grisáceo
+        val finishedColor = Color.parseColor("#BDBDBD") // Gris
 
         fun updateStepStyle(isFinished: Boolean) {
             internalContainer?.setBackgroundColor(if (isFinished) finishedColor else originalColor)
@@ -102,9 +105,16 @@ class RecipeDetailActivity : AppCompatActivity() {
         view.findViewById<TextView>(R.id.tvStepTitle).text = "Paso $number"
         view.findViewById<TextView>(R.id.tvStepDescription).text = step.description
 
-        // Definimos la lógica base del checkbox
-        val onCheckLogic = { isChecked: Boolean ->
+        val onCheckLogic: (Boolean) -> Unit = { isChecked: Boolean ->
             updateStepStyle(isChecked)
+            if (isChecked) {
+                completedStepsCount++
+                if (completedStepsCount == totalStepsCount) {
+                    audioManager.playCelebration()
+                }
+            } else {
+                completedStepsCount--
+            }
         }
 
         val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
@@ -118,7 +128,6 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Hacer que al pulsar en el CardView cambie el estado del checkbox
         view.setOnClickListener {
             checkbox.isChecked = !checkbox.isChecked
         }
@@ -135,12 +144,17 @@ class RecipeDetailActivity : AppCompatActivity() {
         var timeLeft = totalSeconds
         var isRunning = false
         var timer: CountDownTimer? = null
+        var lastAudioTime = 0L
 
-        fun stopTimer() {
+        fun stopTimer(pauseAudio: Boolean = true, hardStopAudio: Boolean = false) {
             timer?.cancel()
             isRunning = false
             btnToggle.setImageResource(android.R.drawable.ic_media_play)
-            audioManager.stop()
+            if (hardStopAudio) {
+                audioManager.hardStop()
+            } else if (pauseAudio) {
+                audioManager.pause()
+            }
         }
 
         fun updateText() {
@@ -156,45 +170,50 @@ class RecipeDetailActivity : AppCompatActivity() {
                 stopTimer()
             } else {
                 checkbox.isChecked = false
-                
                 isRunning = true
                 btnToggle.setImageResource(android.R.drawable.ic_media_pause)
+                
+                audioManager.resume()
 
                 timer = object : CountDownTimer(timeLeft * 1000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                         timeLeft = millisUntilFinished / 1000
                         updateText()
-                        if (timeLeft > 0 && timeLeft % 8 == 0L) {
-                            audioManager.playRandomJoke()
+                        
+                        if (timeLeft > 0 && !audioManager.isPlaying()) {
+                            if (lastAudioTime == 0L || (lastAudioTime - timeLeft) >= 12) {
+                                audioManager.playRandomAudio()
+                                lastAudioTime = timeLeft
+                            }
                         }
                     }
 
                     override fun onFinish() {
                         timeLeft = 0
-                        checkbox.isChecked = true
                         updateText()
                         isRunning = false
+                        checkbox.isChecked = true // Esto disparará el listener y la celebración si es el último
                         btnToggle.setImageResource(android.R.drawable.ic_media_play)
-                        audioManager.playCelebration()
                     }
                 }.start()
             }
         }
 
         checkbox.setOnCheckedChangeListener { _, isChecked ->
-            // Ejecutamos la lógica de estilo y guardado (si la hubiera)
             onCheckLogic(isChecked)
-            
-            // Si se marca manualmente mientras corre, paramos el cronómetro
+            // Si se hace click en el checkbox, el tiempo se para y el audio se pausa
             if (isChecked && isRunning) {
-                stopTimer()
+                // Si hemos completado todos los pasos, no pausamos el audio (para oír la celebración)
+                val shouldPauseAudio = completedStepsCount < totalStepsCount
+                stopTimer(pauseAudio = shouldPauseAudio)
             }
         }
 
         btnReset.setOnClickListener {
-            stopTimer()
+            stopTimer(hardStopAudio = true)
             timeLeft = totalSeconds
             updateText()
+            lastAudioTime = 0L
         }
     }
 
@@ -205,6 +224,6 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        audioManager.stop()
+        audioManager.hardStop()
     }
 }
