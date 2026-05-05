@@ -1,6 +1,7 @@
 package com.example.recetasapp.ui
 
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -28,9 +29,9 @@ class RegisterActivity : AppCompatActivity() {
         val database = AppDatabase.getDatabase(this)
 
         btnRegister.setOnClickListener {
-            val name = etName.text.toString()
-            val username = etUsername.text.toString()
-            val email = etEmail.text.toString()
+            val name = etName.text.toString().trim()
+            val username = etUsername.text.toString().trim()
+            val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
 
             if (name.isBlank() || username.isBlank() || email.isBlank() || password.isBlank()) {
@@ -38,10 +39,19 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Por favor, introduce un correo electrónico válido", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             lifecycleScope.launch {
-                val existingUser = database.userDao().getUserByUsername(username)
-                if (existingUser != null) {
+                val existingUserByUsername = database.userDao().getUserByUsername(username)
+                val existingUserByEmail = database.userDao().getUserByEmail(email)
+
+                if (existingUserByUsername != null) {
                     Toast.makeText(this@RegisterActivity, "El nombre de usuario ya existe", Toast.LENGTH_SHORT).show()
+                } else if (existingUserByEmail != null) {
+                    Toast.makeText(this@RegisterActivity, "El correo electrónico ya está registrado", Toast.LENGTH_SHORT).show()
                 } else {
                     val newUser = User(username, password, email, name)
                     database.userDao().registerUser(newUser)
