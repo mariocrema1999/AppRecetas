@@ -127,7 +127,8 @@ class MainActivity : AppCompatActivity() {
                         DEFAULT_RECIPES.forEach { database.recipeDao().insertRecipe(it) }
                     }
                 } else {
-                    allRecipes = recipesFromDb
+                    // Ordenamos por valoración media de mayor a menor
+                    allRecipes = recipesFromDb.sortedByDescending { it.averageRating }
                     filterRecipes(searchView?.query?.toString())
                 }
             }
@@ -240,6 +241,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        audioManager.stop()
+        audioManager.hardStop()
     }
 }

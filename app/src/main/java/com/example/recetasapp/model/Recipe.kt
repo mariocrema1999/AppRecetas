@@ -62,11 +62,15 @@ data class Recipe(
     val steps: List<Step>,
     val categories: List<RecipeCategory> = emptyList(),
     val allergens: List<Allergen>? = emptyList(),
-    val creatorId: String? = null, // null para las predeterminadas
-    val isPublic: Boolean = true
-) : Parcelable
+    val creatorId: String? = null,
+    val isPublic: Boolean = true,
+    val ratingSum: Float = 0f,
+    val ratingCount: Int = 0
+) : Parcelable {
+    val averageRating: Float
+        get() = if (ratingCount > 0) ratingSum / ratingCount else 0f
+}
 
-// Mock data
 val DEFAULT_RECIPES = listOf(
     Recipe(
         id = "1",
@@ -177,7 +181,7 @@ val DEFAULT_RECIPES = listOf(
             Step("Cuando estén hechos retira la piel con cuidado y colocalos en una fuente amplia."),
             Step("Limpia unos tomates y cortalos en rodajas gruesas y frielas en una sartén con un poco de aceite unos 3 minutos por cada lado a fuego medio-alto."),
             Step("Colocalas en la misma fuente que el pescado."),
-            Step("Pon 8 cucharadas de aceite en otra sartén, calienta y añade los dientes de ajo cortados en láminas, cocinalos durante 2 minutos a fuego medio-bajo. Cuando se doren un poco añade unas tiras de guindilla y cocinalas otro minuto a fuego medio-bajo.",3),
+            Step("Pon 8 cucharadas de aceite in otra sartén, calienta y añade los dientes de ajo cortados en láminas, cocinalos durante 2 minutos a fuego medio-bajo. Cuando se doren un poco añade unas tiras de guindilla y cocinalas otro minuto a fuego medio-bajo.",3),
             Step("Vierte el aceite sobre el pescado. Espolvorea con perejil picado.")
         ),
         categories = listOf(RecipeCategory.PESCADO, RecipeCategory.VERDURAS_HORTALIZAS),
@@ -209,11 +213,11 @@ val DEFAULT_RECIPES = listOf(
             Step("Desgrana las habas y ponlas a cocer en una cazuela con agua y una pizca de sal.",13),
             Step("Pon un poco de aceite in una sartén y pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
             Step("Cuando esté pochado, agrega una cucharada de harina."),
-            Step("Rehoga brevemente y vierte el vino, el agua y una pizca de sal Deja cocer 10 minutos.", 10),
+            Step("Rehoga brevemente y vierte the vino, el agua y una pizca de sal Deja cocer 10 minutos.", 10),
             Step("Pon en una jarra la leche, el rsto de la harina(reserva una cucharada, un poco de perejil picado, los huevos, una cucharada de aceite y bate con una batidora"),
             Step("Calienta bien la sarten, vierte un poco de masa y espárcela por el fondo, cuando empiece a hacer burbujas dale la vuelta. Continua asi hasta terminar toda la masa"),
             Step("Pica finalmente las cebolletas y ponlas a dorar in una sartén con aceite. Saltea hasta que se dore a fuego medio-alto", 7),
-            Step("Agrega una cucharada de harina previamente reserbada y mezcla, incorpora las habas y saltea"),
+            Step("Agrega una cucharada de harina previamente reserbada and mezcla, incorpora las habas y saltea"),
             Step("Deja que se temple y rellena las creepes. Sirve con las verduras")
         ),
         categories = listOf(RecipeCategory.LEGUMBRES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.HUEVOS),
@@ -311,7 +315,7 @@ val DEFAULT_RECIPES = listOf(
             Step("Pela los aojos y cortalos por la mitad"),
             Step("Dora los ajos in una sarten con poco aceite durante un minuto a fuego medio-alto.", 1),
             Step("Añade the conejo y doralo a fuego medio-alto durante 12 minutos.", 12),
-            Step("Agrega una cucharada de harina y mezcla bien hasta que se disuelva."),
+            Step("Agrega una cucharada de harina and mezcla bien hasta que se disuelva."),
             Step("Limpia las alcachofas, retirando el tallo, las hojas externas y la parte alta de las hojas, trocea en cuatro e incorporalas a la cazuela."),
             Step("Vierte el vino y el agua a fuego medio-alto durante 30 minutos."),
             Step("Trocea los pimientos en rectangulos y las cebollas en tiras."),
@@ -342,7 +346,7 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Sal")
         ),
         steps = listOf(
-            Step("Pica finamente las cebollas y ponlas a dorar in una cazuela con un poco de aceite a fuego medio durante 12 minutos.", 12),
+            Step("Pica finamente las cebollas y ponlas a dorar in una cazuela with un poco de aceite a fuego medio durante 12 minutos.", 12),
             Step("Cuando esté bien dorada vierte la leche y los champiñones y deja reducir"),
             Step("Mientras tanto, filetea el lomo y salpimenta, pasa los filetes por harina y huevo batido."),
             Step("Frie el lomo brevemente (vuelta y vuelta) in una sartén con aceite. Escurrelos sobre un papel de cocina.", 12),

@@ -5,23 +5,34 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.recetasapp.R
+import com.example.recetasapp.data.AppDatabase
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.Step
 import com.example.recetasapp.utils.AudioManager
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var audioManager: AudioManager
     private lateinit var stepsContainer: LinearLayout
+    private lateinit var database: AppDatabase
+    private lateinit var currentRecipe: Recipe
+    
     private var completedStepsCount = 0
     private var totalStepsCount = 0
 
@@ -32,10 +43,12 @@ class RecipeDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         audioManager = AudioManager(this)
+        database = AppDatabase.getDatabase(this)
 
         val recipe = intent.getParcelableExtra<Recipe>("RECIPE")
 
         if (recipe != null) {
+            currentRecipe = recipe
             setupUI(recipe)
         } else {
             finish()
@@ -48,6 +61,13 @@ class RecipeDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailDescription).text = recipe.description
         findViewById<TextView>(R.id.tvDetailTime).text = "${recipe.prepTime} min"
         findViewById<TextView>(R.id.tvDetailServings).text = "${recipe.servings}"
+        
+        val tvRating = findViewById<TextView>(R.id.tvDetailRatingText)
+        if (recipe.ratingCount > 0) {
+            tvRating.text = String.format(Locale.getDefault(), "%.1f", recipe.averageRating)
+        } else {
+            tvRating.text = "-"
+        }
 
         // Allergens
         val allergensContainer = findViewById<LinearLayout>(R.id.llDetailAllergensContainer)
@@ -86,6 +106,39 @@ class RecipeDetailActivity : AppCompatActivity() {
         recipe.steps.forEachIndexed { index, step ->
             addStepView(index + 1, step)
         }
+
+        // Setup Rating Logic
+        val cvRatingAction = findViewById<MaterialCardView>(R.id.cvRatingAction)
+        val rbRecipeRating = findViewById<RatingBar>(R.id.rbRecipeRating)
+        val btnSaveRating = findViewById<Button>(R.id.btnSaveRating)
+
+        btnSaveRating.setOnClickListener {
+            val rating = rbRecipeRating.rating
+            if (rating > 0) {
+                lifecycleScope.launch {
+                    database.recipeDao().updateRecipeRating(recipe.id, rating)
+                    Toast.makeText(this@RecipeDetailActivity, "¡Gracias por valorar!", Toast.LENGTH_SHORT).show()
+                    cvRatingAction.visibility = View.GONE
+                    
+                    // Actualizamos localmente para el texto superior
+                    val newCount = recipe.ratingCount + 1
+                    val newSum = recipe.ratingSum + rating
+                    tvRating.text = String.format(Locale.getDefault(), "%.1f", newSum / newCount)
+                }
+            } else {
+                Toast.makeText(this, "Por favor, selecciona una puntuación", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkAllStepsCompleted() {
+        val cvRatingAction = findViewById<MaterialCardView>(R.id.cvRatingAction)
+        if (completedStepsCount == totalStepsCount && totalStepsCount > 0) {
+            cvRatingAction.visibility = View.VISIBLE
+            audioManager.playCelebration()
+        } else {
+            cvRatingAction.visibility = View.GONE
+        }
     }
 
     private fun addStepView(number: Int, step: Step) {
@@ -93,9 +146,8 @@ class RecipeDetailActivity : AppCompatActivity() {
         val checkbox = view.findViewById<CheckBox>(R.id.tvStepCheckbox)
         val internalContainer = view.findViewById<LinearLayout>(R.id.llStepInternalContainer)
 
-        // Colores
         val originalColor = ContextCompat.getColor(this, R.color.menuColor)
-        val finishedColor = Color.parseColor("#BDBDBD") // Gris
+        val finishedColor = Color.parseColor("#BDBDBD")
 
         fun updateStepStyle(isFinished: Boolean) {
             internalContainer?.setBackgroundColor(if (isFinished) finishedColor else originalColor)
@@ -109,12 +161,10 @@ class RecipeDetailActivity : AppCompatActivity() {
             updateStepStyle(isChecked)
             if (isChecked) {
                 completedStepsCount++
-                if (completedStepsCount == totalStepsCount) {
-                    audioManager.playCelebration()
-                }
             } else {
                 completedStepsCount--
             }
+            checkAllStepsCompleted()
         }
 
         val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
@@ -172,14 +222,12 @@ class RecipeDetailActivity : AppCompatActivity() {
                 checkbox.isChecked = false
                 isRunning = true
                 btnToggle.setImageResource(android.R.drawable.ic_media_pause)
-                
                 audioManager.resume()
 
                 timer = object : CountDownTimer(timeLeft * 1000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                         timeLeft = millisUntilFinished / 1000
                         updateText()
-                        
                         if (timeLeft > 0 && !audioManager.isPlaying()) {
                             if (lastAudioTime == 0L || (lastAudioTime - timeLeft) >= 12) {
                                 audioManager.playRandomAudio()
@@ -192,7 +240,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                         timeLeft = 0
                         updateText()
                         isRunning = false
-                        checkbox.isChecked = true // Esto disparará el listener y la celebración si es el último
+                        checkbox.isChecked = true
                         btnToggle.setImageResource(android.R.drawable.ic_media_play)
                     }
                 }.start()
@@ -201,9 +249,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         checkbox.setOnCheckedChangeListener { _, isChecked ->
             onCheckLogic(isChecked)
-            // Si se hace click en el checkbox, el tiempo se para y el audio se pausa
             if (isChecked && isRunning) {
-                // Si hemos completado todos los pasos, no pausamos el audio (para oír la celebración)
                 val shouldPauseAudio = completedStepsCount < totalStepsCount
                 stopTimer(pauseAudio = shouldPauseAudio)
             }

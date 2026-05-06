@@ -13,6 +13,7 @@ import com.example.recetasapp.R
 import com.example.recetasapp.model.Recipe
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.ChipGroup
+import java.util.Locale
 
 class RecipeAdapter(
     private var _recipes: List<Recipe>,
@@ -32,6 +33,7 @@ class RecipeAdapter(
         val description: TextView = view.findViewById(R.id.tvRecipeDescription)
         val prepTime: TextView = view.findViewById(R.id.tvPrepTime)
         val servings: TextView = view.findViewById(R.id.tvServings)
+        val averageRating: TextView = view.findViewById(R.id.tvAverageRating)
         val allergensContainer: ChipGroup = view.findViewById(R.id.llAllergensContainer)
 
         init {
@@ -71,6 +73,12 @@ class RecipeAdapter(
         holder.description.text = recipe.description
         holder.prepTime.text = "${recipe.prepTime} min"
         holder.servings.text = "${recipe.servings} porciones"
+        
+        if (recipe.ratingCount > 0) {
+            holder.averageRating.text = String.format(Locale.getDefault(), "%.1f", recipe.averageRating)
+        } else {
+            holder.averageRating.text = "-"
+        }
 
         holder.allergensContainer.removeAllViews()
         recipe.allergens?.forEach { allergen ->

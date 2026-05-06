@@ -25,4 +25,7 @@ interface RecipeDao {
 
     @Delete
     suspend fun deleteRecipe(recipe: Recipe)
+
+    @Query("UPDATE recipes SET ratingSum = ratingSum + :rating, ratingCount = ratingCount + 1 WHERE id = :recipeId")
+    suspend fun updateRecipeRating(recipeId: String, rating: Float)
 }
