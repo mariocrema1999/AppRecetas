@@ -159,13 +159,14 @@
             android:id="@+id/recyclerViewRecipes"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="@dimen/small_padding"
+            android:layout_marginBottom="85dp"
             android:clipToPadding="false"
+            android:padding="@dimen/small_padding"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/svFilters"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/svFilters"
             tools:listitem="@layout/item_recipe" />
 
         <LinearLayout
