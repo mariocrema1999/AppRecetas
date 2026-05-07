@@ -23,6 +23,7 @@ class RegisterActivity : AppCompatActivity() {
         val etUsername = findViewById<EditText>(R.id.etRegisterUsername)
         val etEmail = findViewById<EditText>(R.id.etRegisterEmail)
         val etPassword = findViewById<EditText>(R.id.etRegisterPassword)
+        val etConfirmPassword = findViewById<EditText>(R.id.etRegisterConfirmPassword)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
 
@@ -33,9 +34,15 @@ class RegisterActivity : AppCompatActivity() {
             val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
+            val confirmPassword = etConfirmPassword.text.toString()
 
-            if (name.isBlank() || username.isBlank() || email.isBlank() || password.isBlank()) {
+            if (name.isBlank() || username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

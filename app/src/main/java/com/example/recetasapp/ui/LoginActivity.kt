@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        val etUsername = findViewById<EditText>(R.id.etLoginUsername)
+        val etIdentifier = findViewById<EditText>(R.id.etLoginUsername)
         val etPassword = findViewById<EditText>(R.id.etLoginPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
@@ -37,22 +37,24 @@ class LoginActivity : AppCompatActivity() {
         val database = AppDatabase.getDatabase(this)
 
         btnLogin?.setOnClickListener {
-            val username = etUsername?.text?.toString() ?: ""
+            val identifier = etIdentifier?.text?.toString() ?: ""
             val password = etPassword?.text?.toString() ?: ""
 
-            if (username.isBlank() || password.isBlank()) {
+            if (identifier.isBlank() || password.isBlank()) {
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             lifecycleScope.launch {
-                val user = database.userDao().getUserByUsername(username)
+                // Buscamos al usuario por nombre de usuario o por email
+                val user = database.userDao().getUserByUsernameOrEmail(identifier)
                 if (user != null && user.password == password) {
-                    sharedPref.edit().putString("logged_user", username).apply()
+                    // Guardamos siempre el username real en las preferencias para mantener la consistencia
+                    sharedPref.edit().putString("logged_user", user.username).apply()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@LoginActivity, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Usuario/Email o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                 }
             }
         }
