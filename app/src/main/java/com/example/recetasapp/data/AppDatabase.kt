@@ -8,12 +8,14 @@ import androidx.room.TypeConverters
 import com.example.recetasapp.model.Converters
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.User
+import com.example.recetasapp.model.Favorite
 
-@Database(entities = [User::class, Recipe::class], version = 2, exportSchema = false)
+@Database(entities = [User::class, Recipe::class, Favorite::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun recipeDao(): RecipeDao
+    abstract fun favoriteDao(): FavoriteDao
 
     companion object {
         @Volatile
@@ -26,7 +28,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "recipe_database"
                 )
-                .fallbackToDestructiveMigration() // Esto borrará los datos antiguos al cambiar la versión, evitando el crash
+                .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance
                 instance

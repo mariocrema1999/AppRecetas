@@ -11,8 +11,8 @@
                 android:id="@+id/action_profile"
                 android:title="Mi perfil" />
             <item
-                android:id="@+id/action_preferences"
-                android:title="Mis preferencias" />
+                android:id="@+id/action_favorites"
+                android:title="Mis recetas favoritas" />
             <item
                 android:id="@+id/action_logout"
                 android:title="Cerrar sesión" />

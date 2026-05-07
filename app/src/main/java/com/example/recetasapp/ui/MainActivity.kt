@@ -20,12 +20,14 @@ import com.example.recetasapp.data.AppDatabase
 import com.example.recetasapp.model.DEFAULT_RECIPES
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.RecipeCategory
+import com.example.recetasapp.model.Favorite
 import com.example.recetasapp.utils.AudioManager
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -39,7 +41,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cgFilters: ChipGroup
     
     private var allRecipes = listOf<Recipe>()
+    private var favoriteIds = setOf<String>()
     private var isShowingOnlyMyRecipes = false
+    private var isShowingOnlyFavorites = false
     private var currentUserId: String? = null
     private var userAllergens = setOf<String>()
 
@@ -80,17 +84,24 @@ class MainActivity : AppCompatActivity() {
         database = AppDatabase.getDatabase(this)
 
         setupUI()
-        observeRecipes()
+        observeData()
     }
 
     private fun setupUI() {
         recyclerView = findViewById(R.id.recyclerViewRecipes)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = RecipeAdapter(emptyList()) { recipe ->
-            val intent = Intent(this, RecipeDetailActivity::class.java)
-            intent.putExtra("RECIPE", recipe)
-            startActivity(intent)
-        }
+        
+        adapter = RecipeAdapter(
+            _recipes = emptyList(),
+            favoriteRecipeIds = emptySet(),
+            onFavoriteClick = { recipe -> toggleFavorite(recipe) },
+            onClick = { recipe ->
+                val intent = Intent(this, RecipeDetailActivity::class.java)
+                intent.putExtra("RECIPE", recipe)
+                startActivity(intent)
+            }
+        )
+        
         recyclerView.adapter = adapter
         registerForContextMenu(recyclerView)
 
@@ -119,16 +130,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeRecipes() {
+    private fun toggleFavorite(recipe: Recipe) {
+        val userId = currentUserId ?: return
+        lifecycleScope.launch(Dispatchers.IO) {
+            val favorite = Favorite(userId, recipe.id)
+            if (favoriteIds.contains(recipe.id)) {
+                database.favoriteDao().removeFavorite(favorite)
+            } else {
+                database.favoriteDao().addFavorite(favorite)
+            }
+        }
+    }
+
+    private fun observeData() {
         lifecycleScope.launch {
-            database.recipeDao().getVisibleRecipes(currentUserId ?: "").collectLatest { recipesFromDb ->
+            val userId = currentUserId ?: ""
+            combine(
+                database.recipeDao().getVisibleRecipes(userId),
+                database.favoriteDao().getFavoriteRecipeIds(userId)
+            ) { recipesFromDb, favIds ->
+                Pair(recipesFromDb, favIds.toSet())
+            }.collectLatest { (recipesFromDb, favIds) ->
                 if (recipesFromDb.isEmpty()) {
                     withContext(Dispatchers.IO) {
                         DEFAULT_RECIPES.forEach { database.recipeDao().insertRecipe(it) }
                     }
                 } else {
-                    // Ordenamos por valoración media de mayor a menor
                     allRecipes = recipesFromDb.sortedByDescending { it.averageRating }
+                    favoriteIds = favIds
                     filterRecipes(searchView?.query?.toString())
                 }
             }
@@ -166,14 +195,15 @@ class MainActivity : AppCompatActivity() {
             val matchesQuery = query.isNullOrBlank() || recipe.name.contains(query, ignoreCase = true)
             val matchesCategories = selectedCategories.isEmpty() || selectedCategories.all { it in (recipe.categories ?: emptyList()) }
             val matchesMyRecipes = !isShowingOnlyMyRecipes || recipe.creatorId == currentUserId
+            val matchesFavorites = !isShowingOnlyFavorites || favoriteIds.contains(recipe.id)
             
             val recipeAllergensNames = recipe.allergens?.map { it.name }?.toSet() ?: emptySet()
             val hasUserAllergen = userAllergens.any { it in recipeAllergensNames }
             
-            matchesQuery && matchesCategories && matchesMyRecipes && !hasUserAllergen
+            matchesQuery && matchesCategories && matchesMyRecipes && matchesFavorites && !hasUserAllergen
         }
         
-        adapter.updateRecipes(filteredList)
+        adapter.updateRecipes(filteredList, favoriteIds)
         updateEmptyState(filteredList.isEmpty())
     }
 
@@ -184,7 +214,11 @@ class MainActivity : AppCompatActivity() {
         if (isEmpty) {
             emptyView?.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
-            tvEmptyMessage?.text = if (isShowingOnlyMyRecipes) "No tienes recetas propias aún" else "No se encontraron recetas"
+            tvEmptyMessage?.text = when {
+                isShowingOnlyFavorites -> "No tienes recetas favoritas"
+                isShowingOnlyMyRecipes -> "No tienes recetas propias aún"
+                else -> "No se encontraron recetas"
+            }
         } else {
             emptyView?.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
@@ -223,8 +257,21 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val favoritesItem = menu?.findItem(R.id.action_favorites)
+        favoritesItem?.title = if (isShowingOnlyFavorites) "Ver todas las recetas" else "Mis recetas favoritas"
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_favorites -> {
+                isShowingOnlyFavorites = !isShowingOnlyFavorites
+                // Cambiamos el texto directamente aquí para respuesta inmediata
+                item.title = if (isShowingOnlyFavorites) "Ver todas las recetas" else "Mis recetas favoritas"
+                filterRecipes(searchView?.query?.toString())
+                true
+            }
             R.id.action_profile -> {
                 startActivity(Intent(this, UserProfileActivity::class.java))
                 true

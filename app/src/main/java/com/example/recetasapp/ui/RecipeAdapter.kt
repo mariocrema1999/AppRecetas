@@ -5,6 +5,7 @@ import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -17,6 +18,8 @@ import java.util.Locale
 
 class RecipeAdapter(
     private var _recipes: List<Recipe>,
+    private var favoriteRecipeIds: Set<String> = emptySet(),
+    private val onFavoriteClick: (Recipe) -> Unit,
     private val onClick: (Recipe) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
@@ -35,6 +38,7 @@ class RecipeAdapter(
         val servings: TextView = view.findViewById(R.id.tvServings)
         val averageRating: TextView = view.findViewById(R.id.tvAverageRating)
         val allergensContainer: ChipGroup = view.findViewById(R.id.llAllergensContainer)
+        val btnFavorite: ImageButton = view.findViewById(R.id.btnFavorite)
 
         init {
             view.setOnCreateContextMenuListener(this)
@@ -80,6 +84,16 @@ class RecipeAdapter(
             holder.averageRating.text = "-"
         }
 
+        val isFavorite = favoriteRecipeIds.contains(recipe.id)
+        holder.btnFavorite.setImageResource(
+            if (isFavorite) android.R.drawable.btn_star_big_on 
+            else android.R.drawable.btn_star_big_off
+        )
+
+        holder.btnFavorite.setOnClickListener {
+            onFavoriteClick(recipe)
+        }
+
         holder.allergensContainer.removeAllViews()
         recipe.allergens?.forEach { allergen ->
             val imageView = ImageView(holder.itemView.context).apply {
@@ -103,27 +117,30 @@ class RecipeAdapter(
 
     override fun getItemCount() = _recipes.size
 
-    fun updateRecipes(newRecipes: List<Recipe>) {
-        val diffCallback = RecipeDiffCallback(_recipes, newRecipes)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
+    fun updateRecipes(newRecipes: List<Recipe>, newFavorites: Set<String> = favoriteRecipeIds) {
+        val oldRecipes = _recipes
+        val oldFavorites = favoriteRecipeIds
         
         _recipes = newRecipes
+        favoriteRecipeIds = newFavorites
+
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldRecipes.size
+            override fun getNewListSize(): Int = newRecipes.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldRecipes[oldItemPosition].id == newRecipes[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldRecipe = oldRecipes[oldItemPosition]
+                val newRecipe = newRecipes[newItemPosition]
+                val wasFavorite = oldFavorites.contains(oldRecipe.id)
+                val isFavorite = newFavorites.contains(newRecipe.id)
+                return oldRecipe == newRecipe && wasFavorite == isFavorite
+            }
+        }
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
-    }
-
-    class RecipeDiffCallback(
-        private val oldList: List<Recipe>,
-        private val newList: List<Recipe>
-    ) : DiffUtil.Callback() {
-        override fun getOldListSize(): Int = oldList.size
-        override fun getNewListSize(): Int = newList.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].id == newList[newItemPosition].id
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
-        }
     }
 }
