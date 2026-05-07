@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/large_padding"
-            android:hint="Usuario"
+            android:hint="Nombre de usuario o correo electrónico"
             app:layout_constraintBottom_toTopOf="@+id/tilPassword"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
             app:layout_constraintStart_toStartOf="@+id/guidelineStart"
