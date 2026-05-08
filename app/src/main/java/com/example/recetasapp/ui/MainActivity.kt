@@ -152,8 +152,9 @@ class MainActivity : AppCompatActivity() {
                 Pair(recipesFromDb, favIds.toSet())
             }.collectLatest { (recipesFromDb, favIds) ->
                 if (recipesFromDb.isEmpty()) {
+                    // Si no hay recetas, insertamos las de por defecto de forma atómica
                     withContext(Dispatchers.IO) {
-                        DEFAULT_RECIPES.forEach { database.recipeDao().insertRecipe(it) }
+                        database.recipeDao().insertRecipes(DEFAULT_RECIPES)
                     }
                 } else {
                     allRecipes = recipesFromDb.sortedByDescending { it.averageRating }
@@ -166,6 +167,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Cargamos los alérgenos del usuario
         val sharedPrefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userAllergens = sharedPrefs.getStringSet("selected_allergens", emptySet()) ?: emptySet()
         filterRecipes(searchView?.query?.toString())
@@ -197,8 +199,9 @@ class MainActivity : AppCompatActivity() {
             val matchesMyRecipes = !isShowingOnlyMyRecipes || recipe.creatorId == currentUserId
             val matchesFavorites = !isShowingOnlyFavorites || favoriteIds.contains(recipe.id)
             
-            val recipeAllergensNames = recipe.allergens?.map { it.name }?.toSet() ?: emptySet()
-            val hasUserAllergen = userAllergens.any { it in recipeAllergensNames }
+            // Corregido: Usamos it.name para que coincida con lo guardado en UserProfileActivity
+            val recipeAllergenNames = recipe.allergens?.map { it.name }?.toSet() ?: emptySet()
+            val hasUserAllergen = userAllergens.any { it in recipeAllergenNames }
             
             matchesQuery && matchesCategories && matchesMyRecipes && matchesFavorites && !hasUserAllergen
         }
@@ -267,7 +270,6 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_favorites -> {
                 isShowingOnlyFavorites = !isShowingOnlyFavorites
-                // Cambiamos el texto directamente aquí para respuesta inmediata
                 item.title = if (isShowingOnlyFavorites) "Ver todas las recetas" else "Mis recetas favoritas"
                 filterRecipes(searchView?.query?.toString())
                 true
