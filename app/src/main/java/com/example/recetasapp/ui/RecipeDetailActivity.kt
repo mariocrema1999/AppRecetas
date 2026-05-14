@@ -217,23 +217,18 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         btnToggle.setOnClickListener {
             if (isRunning) {
+                audioManager.stop()
                 stopTimer()
             } else {
+                audioManager.playRandomAudio()
                 checkbox.isChecked = false
                 isRunning = true
                 btnToggle.setImageResource(android.R.drawable.ic_media_pause)
-                audioManager.resume()
 
                 timer = object : CountDownTimer(timeLeft * 1000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                         timeLeft = millisUntilFinished / 1000
                         updateText()
-                        if (timeLeft > 0 && !audioManager.isPlaying()) {
-                            if (lastAudioTime == 0L || (lastAudioTime - timeLeft) >= 12) {
-                                audioManager.playRandomAudio()
-                                lastAudioTime = timeLeft
-                            }
-                        }
                     }
 
                     override fun onFinish() {

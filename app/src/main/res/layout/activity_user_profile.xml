@@ -124,11 +124,42 @@
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@id/logoutButton"
+            app:layout_constraintBottom_toTopOf="@id/tvPrefrencesTitle"
             app:layout_constraintTop_toBottomOf="@id/tvAllergensTitle">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/cgAllergens"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+                <!-- Allergen chips will be added programmatically -->
+            </com.google.android.material.chip.ChipGroup>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/tvPrefrencesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Mis Preferencias"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/svPreferences"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/svAllergens" />
+
+        <ScrollView
+            android:id="@+id/svPreferences"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/logoutButton"
+            app:layout_constraintTop_toBottomOf="@id/tvPrefrencesTitle">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cgPreferences"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:chipSpacingHorizontal="8dp"

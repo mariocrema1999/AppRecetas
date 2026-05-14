@@ -186,8 +186,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.chipFilterHuevos -> RecipeCategory.HUEVOS
                 R.id.chipFilterPastas -> RecipeCategory.PASTAS
                 R.id.chipFilterSopas -> RecipeCategory.SOPAS_CREMAS
-                R.id.chipFilterCeliacos -> RecipeCategory.CELIACOS
-                R.id.chipFilterDiabeticos -> RecipeCategory.DIABETICOS
                 R.id.chipFilterPostres -> RecipeCategory.POSTRES
                 else -> null
             }

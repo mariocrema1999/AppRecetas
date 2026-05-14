@@ -131,20 +131,6 @@
                     app:chipBackgroundColor="@color/menuColor"
                     android:text="Sopas" />
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFilterCeliacos"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:chipBackgroundColor="@color/menuColor"
-                    android:text="Celíacos" />
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFilterDiabeticos"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:chipBackgroundColor="@color/menuColor"
-                    android:text="Diabéticos" />
-                <com.google.android.material.chip.Chip
                     android:id="@+id/chipFilterPostres"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
