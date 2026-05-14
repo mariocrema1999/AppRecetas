@@ -15,9 +15,7 @@ enum class RecipeCategory(val displayName: String) {
     HUEVOS("Huevos"),
     POSTRES("Postres"),
     PASTAS("Pastas"),
-    SOPAS_CREMAS("Sopas y Cremas"),
-    CELIACOS("Para Celíacos"),
-    DIABETICOS("Para Diabéticos")
+    SOPAS_CREMAS("Sopas y Cremas")
 }
 
 enum class Allergen(val displayName: String, val iconResId: Int) {
@@ -33,8 +31,15 @@ enum class Allergen(val displayName: String, val iconResId: Int) {
     SOJA("Soja", R.drawable.soja),
     SESAMO("Sésamo", R.drawable.sesamo),
     APIO("Apio", R.drawable.apio),
-    LACTEOS("Leche y lácteos", R.drawable.lacteos),
+    LACTEOS("Lácteos", R.drawable.lacteos),
     SULFITOS("Sulfitos", R.drawable.alergenossulfitos)
+}
+
+enum class Restrictions(val displayName: String) {
+    CELIACOS("Celíacos"),
+    VEGETARIANOS("Vegetarianos"),
+    VEGANOS("Veganos"),
+    PESCETARIANOS("Pescetarianos")
 }
 
 @Parcelize
@@ -62,6 +67,7 @@ data class Recipe(
     val steps: List<Step>,
     val categories: List<RecipeCategory> = emptyList(),
     val allergens: List<Allergen>? = emptyList(),
+    val restrictions: List<Restrictions>? = emptyList(),
     val creatorId: String? = null,
     val isPublic: Boolean = true,
     val ratingSum: Float = 0f,
@@ -247,12 +253,12 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Perejil")
         ),
         steps = listOf(
-            Step("Pela las patatas, trocealas y ponlas a cocer durante 17 minutos en una cazuela con agua y sal.",17),
-            Step("Trocea las carnes en daditos y salpiméntalas"),
-            Step("Pica finamente la cebolla y los dientes de ajo, ponlos a dorar in una cazuela con un poco de aceite. Cuando se dore un poco añade la carne y las aceitunas picadas. Rehoga brevemente y vierte la salsa de tomate. Añadi pimienta. Mezcla todo y sirve en una fuente apta para horno"),
-            Step("Cuando las patatas estén cocidas escúrrelas y pásalas por el pasapuré, vierte la lecha salpimenta, espolvorea con perejil y mezcla bien."),
-            Step("Cubre la carne con el puré, espolvorea con el queso rallado."),
-            Step("Gratina en el horno durante 5 minutos", 5)
+            Step("Pela las patatas, trocealas y ponlas a cocer durante 17 minutos en una cazuela with agua y sal.",17),
+            Step("Trocea las carnes in daditos y salpiméntalas"),
+            Step("Pica finamente la cebolla y los dientes de ajo, ponlos a dorar in una cazuela with un poco de aceite. Cuando se dore un poco añade la carne y las aceitunas picadas. Rehoga brevemente y vierte la salsa de tomate. Añadi pimienta. Mezcla todo y sirve in una fuente apta para horno"),
+            Step("Cuando las patatas estén cocidas escúrrelas y pásalas por el pasapuré, vierte la lecha salpimenta, espolvorea with perejil y mezcla bien."),
+            Step("Cubre la carne with el puré, espolvorea with el queso rallado."),
+            Step("Gratina in el horno durante 5 minutos", 5)
         ),
         categories = listOf(RecipeCategory.CARNE),
         allergens = listOf(Allergen.LACTEOS),
@@ -281,10 +287,10 @@ val DEFAULT_RECIPES = listOf(
         ),
         steps = listOf(
             Step("Pica fina toda la verdura."),
-            Step("Pon la verdura a pochar a fuego medio-bajo durante 17 minutos en una cazuela con un poco de aceite, sazona y agrega unas hebras de azafrán.",17),
+            Step("Pon la verdura a pochar a fuego medio-bajo durante 17 minutos in una cazuela with un poco de aceite, sazona y agrega unas hebras de azafrán.",17),
             Step("Cuando tomen un poco de color añade el caldo y, al romper a hervir, añade el arroz y déjalo cocer durante 15 minutos.", 15),
             Step("Pela y pica los huevos e incorporalos."),
-            Step("Sirve en una sopera.")
+            Step("Sirve in una sopera.")
         ),
         categories = listOf(RecipeCategory.ARROCES, RecipeCategory.VERDURAS_HORTALIZAS, RecipeCategory.SOPAS_CREMAS, RecipeCategory.HUEVOS),
         allergens = listOf(Allergen.HUEVOS),
@@ -313,14 +319,14 @@ val DEFAULT_RECIPES = listOf(
         steps = listOf(
             Step("Trocea el conejo y salpimentalo."),
             Step("Pela los aojos y cortalos por la mitad"),
-            Step("Dora los ajos in una sarten con poco aceite durante un minuto a fuego medio-alto.", 1),
+            Step("Dora los ajos in una sarten with poco aceite durante un minuto a fuego medio-alto.", 1),
             Step("Añade the conejo y doralo a fuego medio-alto durante 12 minutos.", 12),
             Step("Agrega una cucharada de harina and mezcla bien hasta que se disuelva."),
-            Step("Limpia las alcachofas, retirando el tallo, las hojas externas y la parte alta de las hojas, trocea en cuatro e incorporalas a la cazuela."),
+            Step("Limpia las alcachofas, retirando el tallo, las hojas externas y la parte alta de las hojas, trocea in cuatro e incorporalas a la cazuela."),
             Step("Vierte el vino y el agua a fuego medio-alto durante 30 minutos."),
-            Step("Trocea los pimientos en rectangulos y las cebollas en tiras."),
+            Step("Trocea los pimientos in rectangulos y las cebollas in tiras."),
             Step("Pon las verduras a dorar in una sarten a fuego medio unos 12 minutos.", 12),
-            Step("Sirve el conejo en una fuente and coloca encima los pimientos y las cebolletas salteadas.")
+            Step("Sirve el conejo in una fuente and coloca encima los pimientos y las cebolletas salteadas.")
         ),
         categories = listOf(RecipeCategory.CARNE, RecipeCategory.VERDURAS_HORTALIZAS),
         allergens = listOf(Allergen.GLUTEN, Allergen.SULFITOS),
@@ -335,7 +341,7 @@ val DEFAULT_RECIPES = listOf(
         servings = 2,
         ingredients = listOf(
             RecipeIngredient("Lomo fresco", "600 g"),
-            RecipeIngredient("Champiñón en conserva", "400 g"),
+            RecipeIngredient("Champiñón in conserva", "400 g"),
             RecipeIngredient("Cebollas", "2"),
             RecipeIngredient("Leche", "1 vaso"),
             RecipeIngredient("Huevos", "2"),
@@ -349,8 +355,8 @@ val DEFAULT_RECIPES = listOf(
             Step("Pica finamente las cebollas y ponlas a dorar in una cazuela with un poco de aceite a fuego medio durante 12 minutos.", 12),
             Step("Cuando esté bien dorada vierte la leche y los champiñones y deja reducir"),
             Step("Mientras tanto, filetea el lomo y salpimenta, pasa los filetes por harina y huevo batido."),
-            Step("Frie el lomo brevemente (vuelta y vuelta) in una sartén con aceite. Escurrelos sobre un papel de cocina.", 12),
-            Step("Sirve el lomo acompañado de los champiñones y espolvorea con perejil picado.")
+            Step("Frie el lomo brevemente (vuelta y vuelta) in una sartén with aceite. Escurrelos sobre un papel de cocina.", 12),
+            Step("Sirve el lomo acompañado de los champiñones y espolvorea with perejil picado.")
         ),
         categories = listOf(RecipeCategory.CARNE, RecipeCategory.HUEVOS),
         allergens = listOf(Allergen.HUEVOS, Allergen.LACTEOS, Allergen.GLUTEN),
@@ -373,14 +379,15 @@ val DEFAULT_RECIPES = listOf(
         ),
         steps = listOf(
             Step("Pela las cebollas y las patatas."),
-            Step("Pica las cebollas en trozos no muy pequeños y ponlas a dorar duarnte 15 minutos a fuego medio-bajo in una sartén con abundante aceite."),
-            Step("Mientras tanto, pica las patatas en dados, sazonalas y añadelas a la sartén. Agrega el pimiento picado en dados y frie todo a fuego medio, removiendo de vez en cuando, hasta que se dore todo un poco."),
+            Step("Pica las cebollas in trozos no muy pequeños y ponlas a dorar duarnte 15 minutos a fuego medio-bajo in una sartén with abundante aceite."),
+            Step("Mientras tanto, pica las patatas in dados, sazonalas y añadelas a la sartén. Agrega el pimiento picado in dados y frie todo a fuego medio, removiendo de vez in cuando, hasta que se dore todo un poco."),
             Step("Retiralas y escurrelas."),
             Step("Prepara un recipiente y bate 4 huevos."),
             Step("Agrega a cada uno la mitad de las patatas, cebollas y pimiento."),
             Step("Pon un poco de aceite in una sartén y vierte la mezcla anterior. Cuaja el huevo, primero a fuego vivo y despues un poco más suave. Voltea la tortilla para que se haga por los dos lados.")
         ),
         categories = listOf(RecipeCategory.HUEVOS, RecipeCategory.VERDURAS_HORTALIZAS),
+        allergens = listOf(Allergen.HUEVOS),
         creatorId = null
     ),
     Recipe(
@@ -403,20 +410,20 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Perejil")
         ),
         steps = listOf(
-            Step("Pela las patatas, cortalas en rodajas y frielas a fuego fuerte in una sartén hasta que se doren durante 12 minutos a fuego medio.", 12),
-            Step("Pica las cebolletas y corta los ajos frescos en trozos de unos 5 centimetros. Dóralos in una cazuela amplia y baja con 4 cucharadas de aceite unos 5 minutos a fuego medio-alto.", 5),
+            Step("Pela las patatas, cortalas in rodajas y frielas a fuego fuerte in una sartén hasta que se doren durante 12 minutos a fuego medio.", 12),
+            Step("Pica las cebolletas y corta los ajos frescos in trozos de unos 5 centimetros. Dóralos in una cazuela amplia y baja with 4 cucharadas de aceite unos 5 minutos a fuego medio-alto.", 5),
             Step("Incorporalas patatas y rehoga."),
             Step("Cuando esté rehogado añade el arroz, mezcla bien y añade el vino blanco y el caldo. Sazona y espolvorea perejil picado. Deja cocer durante 17 minutos.", 17),
-            Step("Pela el huevo cocido y córtalo en 4."),
-            Step("Decora la cazuela con los trozos de huevo y una rama de perejil.")
+            Step("Pela el huevo cocido y córtalo in 4."),
+            Step("Decora la cazuela with los trozos de huevo y una rama de perejil.")
         ),
-        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.HUEVOS),
+        categories = listOf(RecipeCategory.ARROCES, RecipeCategory.HUEVOS, RecipeCategory.VERDURAS_HORTALIZAS),
         allergens = listOf(Allergen.HUEVOS, Allergen.SULFITOS),
         creatorId = null
     ),
     Recipe(
         id = "12",
-        name = "Tallarines con oreja de cerdo",
+        name = "Tallarines with oreja de cerdo",
         description = "Un plato crujiente y meloso",
         image = "https://static.bainet.es/clip/8722edb4-31e8-4c24-b0ed-ba1515a9530b_source-aspect-ratio_1600w_0.jpg",
         prepTime = 13,
@@ -435,15 +442,15 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Salsa de tomate", "1/2 litro")
         ),
         steps = listOf(
-            Step("Pon una cazuela al fuego con abundante agua, un chorro de aceite y una pizca de sal."),
+            Step("Pon una cazuela al fuego with abundante agua, un chorro de aceite y una pizca de sal."),
             Step("Cuando empiece a hervir, añade los tallarines y cuécelos durante 10 minutos.",10),
             Step("Escurre y refrescalos."),
             Step("Pon agua in una hoya a presión, agrega 1 cebolleta, la cabeza de ajos, una pizca de sal y las orejas del cerdo. Tapa la hoya y deja cocer durante 10 minutos desde que empiece  salir el vapor", 10),
             Step("Retira las orejas, deja que se templen y trocealas."),
-            Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas."),
-            Step("Pon todo a pochar in una sartén con aceite."),
+            Step("Para la salsa, pica las cebolletas in juliana fina. Pela los ajos y córtalos in láminas."),
+            Step("Pon todo a pochar in una sartén with aceite."),
             Step("Cuando esté bien pochado, añade un par de cucharaditas de pimentón, mezcla bien, agrega la salsa de tomate y los trozos de oreja de cerdo."),
-            Step("Añade la pasta a la sartén, mezcla y sirve en una fuente amplia."),
+            Step("Añade la pasta a la sartén, mezcla y sirve in una fuente amplia."),
         ),
         categories = listOf(RecipeCategory.PASTAS, RecipeCategory.CARNE),
         allergens = listOf(Allergen.GLUTEN),
@@ -469,15 +476,15 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Hojas de menta")
         ),
         steps = listOf(
-            Step("Tritura las galletas y colócalas en un bol. Añade la mantequilla y mezcla bien. Cubre el fondo del molde e introdúcelo en el frigorífico para que la masa endurezca un poco."),
-            Step("Pon la gelatina a remojo in un bol con agua fría hasta que se ablande."),
-            Step("Calienta la mitad de la nata, introduce las hojas de gelatina escurridas y espera a que se disuelvan. Agrega el resto de la nata, el queso, la cucharadita de sirope de ágave y mezcla bien con una varilla de mano."),
-            Step("Vierte la mezcla sobre la base de galletas e introduce la tarta en el frigorífico hasta que endurezca (40 minutos aproximadamente).", 40),
-            Step("Calienta la mermelada para que se ablande un poco, cuélala y cubre la superficie de la tarta. Desmolda y decórala con unas fresas y unas hojas de menta."),
-            Step("Para la salsa, pica las cebolletas en juliana fina. Pela los ajos y córtalos en láminas.")
+            Step("Tritura las galletas y colócalas in un bol. Añade la mantequilla y mezcla bien. Cubre el fondo del molde e introdúcelo in el frigorífico para que la masa endurezca un poco."),
+            Step("Pon la gelatina a remojo in un bol with agua fría hasta que se ablande."),
+            Step("Calienta la mitad de la nata, introduce las hojas de gelatina escurridas y espera a que se disuelvan. Agrega el resto de la nata, el queso, la cucharadita de sirope de ágave y mezcla bien with una varilla de mano."),
+            Step("Vierte la mezcla sobre la base de galletas e introduce la tarta in el frigorífico hasta que endurezca (40 minutos aproximadamente).", 40),
+            Step("Calienta la mermelada para que se ablande un poco, cuélala y cubre la superficie de la tarta. Desmolda y decórala with unas fresas y unas hojas de menta."),
+            Step("Para la salsa, pica las cebolletas in juliana fina. Pela los ajos y córtalos in láminas.")
         ),
-        categories = listOf(RecipeCategory.DIABETICOS, RecipeCategory.POSTRES),
-        allergens = listOf(Allergen.LACTEOS, Allergen.GLUTEN),
+        categories = listOf(RecipeCategory.POSTRES),
+        allergens = listOf(Allergen.LACTEOS),
         creatorId = null
     ),
     Recipe(
@@ -492,22 +499,23 @@ val DEFAULT_RECIPES = listOf(
             RecipeIngredient("Aceite de oliva virgen extra", "25 ml"),
             RecipeIngredient("Sirope de arce", "15 ml"),
             RecipeIngredient("Sal", "5 g"),
-            RecipeIngredient("Levadura seca en polvo", "4 g"),
+            RecipeIngredient("Levadura seca in polvo", "4 g"),
             RecipeIngredient("Agua", "150 ml"),
             RecipeIngredient("Romero, tomillo y menta (para decorar)")
         ),
         steps = listOf(
-            Step("Pon el arroz in un bol, cúbrelo con agua y ponlo a remojo desde la víspera."),
+            Step("Pon el arroz in un bol, cúbrelo with agua y ponlo a remojo desde la víspera."),
             Step("Escúrrelo y colócalo in un vaso americano. Añade el aceite, el sirope de arce, la sal y la levadura."),
             Step("Calienta el agua y viértela encima."),
             Step("Tritura los ingredientes hasta conseguir un puré homogéneo y cuela la mezcla."),
-            Step("Para para que luego sea más fácil desmoldar el pan, cubre un molde de papel de aluminio con papel sulfurizado (de horno)."),
-            Step("Vierte la mezcla in el molde y deja que fermente in el horno a 40ºC durante 2 horas y media hasta que doble su tamaño. A la hora y cuarto, pulverízalo con un poco de agua.",120),
-            Step("Sube la temperatura del horno a 180º, pulveriza el pan con otro poco de agua y hornéalo durante 25-30 minutos.", 28),
-            Step("Deja que se enfríe y sirve. Adorna los platos con unas ramas de tomillo, de romero y unas hojas de menta.")
+            Step("Para para que luego sea más fácil desmoldar el pan, cubre un molde de papel de aluminio with papel sulfurizado (de horno)."),
+            Step("Vierte la mezcla in el molde y deja que fermente in el horno a 40ºC durante 2 horas y media hasta que doble su tamaño. A la hora y cuarto, pulverízalo with un poco de agua.",120),
+            Step("Sube la temperatura del horno a 180º, pulveriza el pan with otro poco de agua y hornéalo durante 25-30 minutos.", 28),
+            Step("Deja que se enfríe y sirve. Adorna los platos with unas ramas de tomillo, de romero y unas hojas de menta.")
         ),
-        categories = listOf(RecipeCategory.CELIACOS),
+        categories = listOf(RecipeCategory.ARROCES),
         allergens = emptyList(),
+        restrictions = listOf(Restrictions.CELIACOS),
         creatorId = null
     ),
 )

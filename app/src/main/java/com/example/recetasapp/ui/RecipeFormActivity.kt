@@ -113,8 +113,6 @@ class RecipeFormActivity : AppCompatActivity() {
                 RecipeCategory.HUEVOS -> R.id.chipHuevos
                 RecipeCategory.PASTAS -> R.id.chipPastas
                 RecipeCategory.SOPAS_CREMAS -> R.id.chipSopas
-                RecipeCategory.CELIACOS -> R.id.chipCeliacos
-                RecipeCategory.DIABETICOS -> R.id.chipDiabeticos
                 RecipeCategory.POSTRES -> R.id.chipPostres
             }
             findViewById<Chip>(chipId).isChecked = true
@@ -282,8 +280,6 @@ class RecipeFormActivity : AppCompatActivity() {
                 if (findViewById<Chip>(R.id.chipHuevos).isChecked) selectedCategories.add(RecipeCategory.HUEVOS)
                 if (findViewById<Chip>(R.id.chipPastas).isChecked) selectedCategories.add(RecipeCategory.PASTAS)
                 if (findViewById<Chip>(R.id.chipSopas).isChecked) selectedCategories.add(RecipeCategory.SOPAS_CREMAS)
-                if (findViewById<Chip>(R.id.chipCeliacos).isChecked) selectedCategories.add(RecipeCategory.CELIACOS)
-                if (findViewById<Chip>(R.id.chipDiabeticos).isChecked) selectedCategories.add(RecipeCategory.DIABETICOS)
                 if (findViewById<Chip>(R.id.chipPostres).isChecked) selectedCategories.add(RecipeCategory.POSTRES)
 
                 val selectedAllergens = mutableListOf<Allergen>()

@@ -43,4 +43,14 @@ class Converters {
         val listType = object : TypeToken<List<Allergen>>() {}.type
         return gson.fromJson(value, listType)
     }
+
+    @TypeConverter
+    fun fromRestrictionsList(value: List<Restrictions>?): String? = value?.let { gson.toJson(it) }
+
+    @TypeConverter
+    fun toRestrictionsList(value: String?): List<Restrictions>? {
+        if (value == null) return null
+        val listType = object : TypeToken<List<Restrictions>>() {}.type
+        return gson.fromJson(value, listType)
+    }
 }

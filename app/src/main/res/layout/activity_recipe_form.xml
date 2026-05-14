@@ -193,22 +193,6 @@
                     android:text="Sopas y Cremas" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipCeliacos"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Para Celíacos" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipDiabeticos"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Para Diabéticos" />
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/chipPostres"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"

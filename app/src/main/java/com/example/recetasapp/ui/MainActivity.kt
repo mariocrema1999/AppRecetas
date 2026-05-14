@@ -17,10 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recetasapp.R
 import com.example.recetasapp.data.AppDatabase
+import com.example.recetasapp.model.Allergen
 import com.example.recetasapp.model.DEFAULT_RECIPES
 import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.RecipeCategory
 import com.example.recetasapp.model.Favorite
+import com.example.recetasapp.model.Restrictions
 import com.example.recetasapp.utils.AudioManager
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     private var isShowingOnlyFavorites = false
     private var currentUserId: String? = null
     private var userAllergens = setOf<String>()
+    private var userRestrictions = setOf<String>()
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -152,7 +155,6 @@ class MainActivity : AppCompatActivity() {
                 Pair(recipesFromDb, favIds.toSet())
             }.collectLatest { (recipesFromDb, favIds) ->
                 if (recipesFromDb.isEmpty()) {
-                    // Si no hay recetas, insertamos las de por defecto de forma atómica
                     withContext(Dispatchers.IO) {
                         database.recipeDao().insertRecipes(DEFAULT_RECIPES)
                     }
@@ -167,9 +169,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Cargamos los alérgenos del usuario
         val sharedPrefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userAllergens = sharedPrefs.getStringSet("selected_allergens", emptySet()) ?: emptySet()
+        userRestrictions = sharedPrefs.getStringSet("selected_restrictions", emptySet()) ?: emptySet()
         filterRecipes(searchView?.query?.toString())
     }
 
@@ -197,11 +199,36 @@ class MainActivity : AppCompatActivity() {
             val matchesMyRecipes = !isShowingOnlyMyRecipes || recipe.creatorId == currentUserId
             val matchesFavorites = !isShowingOnlyFavorites || favoriteIds.contains(recipe.id)
             
-            // Corregido: Usamos it.name para que coincida con lo guardado en UserProfileActivity
             val recipeAllergenNames = recipe.allergens?.map { it.name }?.toSet() ?: emptySet()
             val hasUserAllergen = userAllergens.any { it in recipeAllergenNames }
             
-            matchesQuery && matchesCategories && matchesMyRecipes && matchesFavorites && !hasUserAllergen
+            val recipeCategories = recipe.categories ?: emptyList()
+            val recipeAllergens = recipe.allergens ?: emptyList()
+            
+            var fulfillsRestrictions = true
+            
+            if (userRestrictions.contains(Restrictions.VEGANOS.name)) {
+                val isAnimalProduct = recipeCategories.any { it == RecipeCategory.CARNE || it == RecipeCategory.PESCADO || it == RecipeCategory.HUEVOS } ||
+                                    recipeAllergens.any { it == Allergen.LACTEOS || it == Allergen.HUEVOS || it == Allergen.PESCADO || it == Allergen.CRUSTACEOS || it == Allergen.MOLUSCOS }
+                if (isAnimalProduct) fulfillsRestrictions = false
+            }
+            
+            if (fulfillsRestrictions && userRestrictions.contains(Restrictions.VEGETARIANOS.name)) {
+                val hasMeatOrFish = recipeCategories.any { it == RecipeCategory.CARNE || it == RecipeCategory.PESCADO } ||
+                                   recipeAllergens.any { it == Allergen.PESCADO || it == Allergen.CRUSTACEOS || it == Allergen.MOLUSCOS }
+                if (hasMeatOrFish) fulfillsRestrictions = false
+            }
+            
+            if (fulfillsRestrictions && userRestrictions.contains(Restrictions.PESCETARIANOS.name)) {
+                val hasMeat = recipeCategories.any { it == RecipeCategory.CARNE }
+                if (hasMeat) fulfillsRestrictions = false
+            }
+
+            if (fulfillsRestrictions && userRestrictions.contains(Restrictions.CELIACOS.name)) {
+                if (recipeAllergens.contains(Allergen.GLUTEN)) fulfillsRestrictions = false
+            }
+            
+            matchesQuery && matchesCategories && matchesMyRecipes && matchesFavorites && !hasUserAllergen && fulfillsRestrictions
         }
         
         adapter.updateRecipes(filteredList, favoriteIds)

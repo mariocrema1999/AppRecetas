@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.recetasapp.R
 import com.example.recetasapp.data.AppDatabase
 import com.example.recetasapp.model.Allergen
+import com.example.recetasapp.model.Restrictions
 import com.example.recetasapp.model.User
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,12 +30,15 @@ import kotlinx.coroutines.withContext
 class UserProfileActivity : AppCompatActivity() {
     
     private lateinit var cgAllergens: ChipGroup
+    private lateinit var cgRestrictions: ChipGroup
     private lateinit var profileName: TextView
     private lateinit var profileEmail: TextView
     private lateinit var logoutButton: Button
     private lateinit var btnEditProfile: ImageButton
     
     private val PREFS_NAME = "user_prefs"
+
+    private val KEY_RESTRICTIONS = "selected_restrictions"
     private val KEY_ALLERGENS = "selected_allergens"
     private var currentUser: User? = null
 
@@ -57,11 +61,13 @@ class UserProfileActivity : AppCompatActivity() {
         profileName = findViewById(R.id.profileName)
         profileEmail = findViewById(R.id.profileEmail)
         cgAllergens = findViewById(R.id.cgAllergens)
+        cgRestrictions = findViewById(R.id.cgRestrictions)
         logoutButton = findViewById(R.id.logoutButton)
         btnEditProfile = findViewById(R.id.btnEditProfile)
 
         loadUserData()
         setupAllergenChips()
+        setupRestrictionsChips()
         
         logoutButton.setOnClickListener {
             val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -196,6 +202,42 @@ class UserProfileActivity : AppCompatActivity() {
         getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putStringSet(KEY_ALLERGENS, selectedSet)
+            .apply()
+    }
+
+    private fun setupRestrictionsChips() {
+        val sharedPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val selectedRestrictions = sharedPrefs.getStringSet(KEY_RESTRICTIONS, emptySet()) ?: emptySet()
+
+        Restrictions.values().forEach { restriction ->
+            val chip = Chip(this).apply {
+                text = restriction.displayName
+                isCheckable = true
+                tag = restriction
+                isChipIconVisible = true
+                isChecked = selectedRestrictions.contains(restriction.name)
+
+                setOnCheckedChangeListener { _, isChecked ->
+                    saveSelectedRestrictions()
+                }
+            }
+            cgRestrictions.addView(chip)
+        }
+    }
+
+    private fun saveSelectedRestrictions() {
+        val selectedSet = mutableSetOf<String>()
+        for (i in 0 until cgRestrictions.childCount) {
+            val chip = cgRestrictions.getChildAt(i) as Chip
+            if (chip.isChecked) {
+                val restriction = chip.tag as Restrictions
+                selectedSet.add(restriction.name)
+            }
+        }
+
+        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putStringSet(KEY_RESTRICTIONS, selectedSet)
             .apply()
     }
 }

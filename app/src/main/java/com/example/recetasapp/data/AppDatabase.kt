@@ -10,7 +10,7 @@ import com.example.recetasapp.model.Recipe
 import com.example.recetasapp.model.User
 import com.example.recetasapp.model.Favorite
 
-@Database(entities = [User::class, Recipe::class, Favorite::class], version = 4, exportSchema = false)
+@Database(entities = [User::class, Recipe::class, Favorite::class], version = 6, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
