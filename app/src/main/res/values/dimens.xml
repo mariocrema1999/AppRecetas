@@ -12,7 +12,10 @@
     <dimen name="small_padding">8dp</dimen>
     <dimen name="large_padding">32dp</dimen>
     <dimen name="login_logo_size">150dp</dimen>
+    <dimen name="main_logo_size">40dp</dimen>
+    <dimen name="toolbar_height_tablet">?attr/actionBarSize</dimen>
     <dimen name="header_text_size">24sp</dimen>
     <dimen name="body_text_size">16sp</dimen>
     <dimen name="caption_text_size">12sp</dimen>
+    <dimen name="recipe_image_height">200dp</dimen>
 </resources>

@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recetasapp.R
@@ -92,7 +93,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUI() {
         recyclerView = findViewById(R.id.recyclerViewRecipes)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        
+        val columns = resources.getInteger(R.integer.recipe_grid_columns)
+        recyclerView.layoutManager = if (columns > 1) {
+            GridLayoutManager(this, columns)
+        } else {
+            LinearLayoutManager(this)
+        }
         
         adapter = RecipeAdapter(
             _recipes = emptyList(),

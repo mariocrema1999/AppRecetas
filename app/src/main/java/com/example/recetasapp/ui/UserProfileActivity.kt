@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -34,7 +34,7 @@ class UserProfileActivity : AppCompatActivity() {
     private lateinit var profileName: TextView
     private lateinit var profileEmail: TextView
     private lateinit var logoutButton: Button
-    private lateinit var btnEditProfile: ImageButton
+    private lateinit var btnEditProfile: View
     
     private val PREFS_NAME = "user_prefs"
 
@@ -52,7 +52,9 @@ class UserProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Perfil de Usuario"
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        // Usamos el root view si R.id.main no se encuentra para evitar NullPointerException
+        val mainView = findViewById<View>(R.id.main) ?: window.decorView.findViewById(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
             insets

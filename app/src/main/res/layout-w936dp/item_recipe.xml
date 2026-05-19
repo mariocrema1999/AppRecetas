@@ -5,9 +5,9 @@
     android:id="@+id/cardViewReceta"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,17 +16,16 @@
         <ImageView
             android:id="@+id/ivRecipeImage"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/recipe_image_height"
+            android:layout_height="220dp"
             android:scaleType="centerCrop"
-            android:background="@android:color/darker_gray"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:contentDescription="Imagen de la receta" />
+            android:contentDescription="Imagen receta" />
 
         <ImageButton
             android:id="@+id/btnFavorite"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/btn_star_big_off"
@@ -40,14 +39,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/menuColor"
-            android:padding="16dp"
+            android:padding="20dp"
             app:layout_constraintTop_toBottomOf="@id/ivRecipeImage">
 
             <TextView
                 android:id="@+id/tvRecipeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 tools:text="Pasta Carbonara" />
 
@@ -55,7 +54,7 @@
                 android:id="@+id/tvRecipeCreator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="italic"
                 android:textColor="@android:color/darker_gray"
                 android:visibility="gone"
@@ -66,91 +65,79 @@
                 android:id="@+id/tvRecipeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:textColor="@android:color/secondary_text_light"
-                tools:text="Clásica receta italiana con huevo, queso parmesano y panceta crujiente" />
+                android:textSize="16sp"
+                tools:text="Descripción detallada de la receta para tablets." />
 
-            <!-- Allergen Icons Container -->
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/llAllergensContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:chipSpacingHorizontal="2dp"
-                app:chipSpacingVertical="2dp">
-            </com.google.android.material.chip.ChipGroup>
+                android:layout_marginTop="12dp"
+                app:chipSpacingHorizontal="4dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-                
-                <!-- Prep Time -->
+                android:layout_marginTop="20dp">
+
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@android:drawable/ic_menu_recent_history"
                     android:contentDescription="Tiempo"/>
-                
                 <TextView
                     android:id="@+id/tvPrepTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="24dp"
+                    android:textSize="14sp"
                     tools:text="25 min"/>
 
-                <!-- Servings -->
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@android:drawable/ic_menu_myplaces"
                     android:contentDescription="Porciones"/>
-                
                 <TextView
                     android:id="@+id/tvServings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="6dp"
+                    android:textSize="14sp"
                     tools:text="4 porciones"/>
-
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Rating view in the bottom right -->
         <LinearLayout
             android:id="@+id/llRatingIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
-            android:layout_margin="8dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_margin="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:src="@android:drawable/btn_star_big_on"
                 app:tint="#FFD700"
                 android:contentDescription="Rating"/>
-
             <TextView
                 android:id="@+id/tvAverageRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:textSize="14sp"
+                android:layout_marginStart="6dp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 tools:text="4.5"/>
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
