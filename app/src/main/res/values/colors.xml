@@ -17,4 +17,6 @@
     <color name="iconosColor">#FFDBBB</color>
     <color name="bienvenido">#381E02</color>
 
+    <color name="backgroundColor">#EDE8D0</color>
+    <color name="textColor">#381E02</color>
 </resources>

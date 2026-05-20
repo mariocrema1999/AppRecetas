@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primaryColor"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.AppInfoActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/Theme.RecetasApp.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:popupTheme="@style/Theme.RecetasApp.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="32dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintWidth_max="800dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Guía de Uso"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bienvenido a RecetasApp. Aquí podrás encontrar y gestionar tus recetas favoritas. \n\n1. Buscar Recetas: Utiliza la barra de búsqueda superior para encontrar recetas por nombre.\n2. Filtrar: Usa los chips de categorías para filtrar por tipo de alimento.\n3. Añadir Receta: Pulsa el botón '+' para añadir tus propias creaciones.\n4. Perfil: Accede a tu perfil desde el menú superior para gestionar tus alergias y preferencias."
+                    android:textSize="18sp"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="32dp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Política de Privacidad"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="En RecetasApp, nos tomamos muy en serio tu privacidad. Los datos recogidos (nombre de usuario, alergias) se almacenan localmente en el dispositivo para mejorar tu experiencia de usuario y no se comparten con terceros."
+                    android:textSize="18sp"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="32dp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Aviso Legal"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Esta aplicación se proporciona 'tal cual' sin garantías de ningún tipo. El contenido de las recetas es responsabilidad de los usuarios que las crean."
+                    android:textSize="18sp"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="32dp"
+                    android:lineSpacingExtra="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cookies"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No utilizamos cookies de seguimiento de terceros. Solo utilizamos almacenamiento local para mantener tu sesión activa y tus preferencias de filtrado."
+                    android:textSize="18sp"
+                    android:textColor="@color/bienvenido"
+                    android:layout_marginBottom="48dp"
+                    android:lineSpacingExtra="6dp"/>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

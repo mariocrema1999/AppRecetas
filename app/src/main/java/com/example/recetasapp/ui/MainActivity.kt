@@ -310,6 +310,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, UserProfileActivity::class.java))
                 true
             }
+            R.id.action_info -> {
+                startActivity(Intent(this, AppInfoActivity::class.java))
+                true
+            }
             R.id.action_logout -> {
                 getSharedPreferences("app_prefs", Context.MODE_PRIVATE).edit().clear().apply()
                 startActivity(Intent(this, LoginActivity::class.java))
