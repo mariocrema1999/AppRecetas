@@ -13,6 +13,10 @@ import com.example.recetasapp.R
 import com.example.recetasapp.data.AppDatabase
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla de inicio de sesión de la aplicación.
+ * Permite a los usuarios autenticarse mediante su nombre de usuario o email y contraseña.
+ */
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

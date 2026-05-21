@@ -13,6 +13,10 @@ import com.example.recetasapp.data.AppDatabase
 import com.example.recetasapp.model.User
 import kotlinx.coroutines.launch
 
+/**
+ * Actividad que gestiona el registro de nuevos usuarios en la aplicación.
+ * Realiza validaciones de campos vacíos, coincidencia de contraseñas y formato de email.
+ */
 class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +40,7 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
             val confirmPassword = etConfirmPassword.text.toString()
 
+            // Validaciones básicas
             if (name.isBlank() || username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener

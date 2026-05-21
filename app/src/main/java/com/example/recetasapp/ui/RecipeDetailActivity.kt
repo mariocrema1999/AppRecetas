@@ -1,5 +1,6 @@
 package com.example.recetasapp.ui
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -26,6 +27,10 @@ import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+/**
+ * Actividad que muestra los detalles de una receta seleccionada.
+ * Incluye ingredientes, pasos interactivos con temporizadores, y sistema de valoración.
+ */
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var audioManager: AudioManager
@@ -55,6 +60,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura la interfaz de usuario con los datos de la receta.
+     * @param recipe Objeto receta a mostrar.
+     */
     private fun setupUI(recipe: Recipe) {
         supportActionBar?.title = recipe.name
 
@@ -69,7 +78,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             tvRating.text = "-"
         }
 
-        // Allergens
+        // Alérgenos
         val allergensContainer = findViewById<LinearLayout>(R.id.llDetailAllergensContainer)
         recipe.allergens?.forEach { allergen ->
             val imageView = ImageView(this).apply {
@@ -85,7 +94,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             allergensContainer.addView(imageView)
         }
 
-        // Ingredients
+        // Ingredientes
         val ingredientsText = recipe.ingredients.joinToString("\n") { ingredient ->
             if (ingredient.quantity.isNullOrBlank()) {
                 "• ${ingredient.name}"
@@ -95,10 +104,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
         findViewById<TextView>(R.id.tvIngredientsList).text = ingredientsText
 
-        // Image
+        // Imagen
         Glide.with(this).load(recipe.image).into(findViewById(R.id.ivDetailImage))
 
-        // Steps
+        // Pasos
         stepsContainer = findViewById(R.id.stepsContainer)
         totalStepsCount = recipe.steps.size
         completedStepsCount = 0
@@ -107,7 +116,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             addStepView(index + 1, step)
         }
 
-        // Setup Rating Logic
+        // Lógica de valoración
         val cvRatingAction = findViewById<MaterialCardView>(R.id.cvRatingAction)
         val rbRecipeRating = findViewById<RatingBar>(R.id.rbRecipeRating)
         val btnSaveRating = findViewById<Button>(R.id.btnSaveRating)
@@ -120,7 +129,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                     Toast.makeText(this@RecipeDetailActivity, "¡Gracias por valorar!", Toast.LENGTH_SHORT).show()
                     cvRatingAction.visibility = View.GONE
                     
-                    // Actualizamos localmente para el texto superior
+                    // Actualización local del texto de valoración
                     val newCount = recipe.ratingCount + 1
                     val newSum = recipe.ratingSum + rating
                     tvRating.text = String.format(Locale.getDefault(), "%.1f", newSum / newCount)
@@ -131,6 +140,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Verifica si se han completado todos los pasos para mostrar la sección de valoración
+     * y reproducir el sonido de celebración.
+     */
     private fun checkAllStepsCompleted() {
         val cvRatingAction = findViewById<MaterialCardView>(R.id.cvRatingAction)
         if (completedStepsCount == totalStepsCount && totalStepsCount > 0) {
@@ -141,19 +154,29 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Añade una vista de paso a la lista de instrucciones.
+     * @param number Número del paso.
+     * @param step Datos del paso.
+     */
     private fun addStepView(number: Int, step: Step) {
         val view = LayoutInflater.from(this).inflate(R.layout.item_step, stepsContainer, false)
         val checkbox = view.findViewById<CheckBox>(R.id.tvStepCheckbox)
         val internalContainer = view.findViewById<LinearLayout>(R.id.llStepInternalContainer)
+        val internalTimerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
 
         val originalColor = ContextCompat.getColor(this, R.color.menuColor)
         val finishedColor = Color.parseColor("#BDBDBD")
 
         fun updateStepStyle(isFinished: Boolean) {
-            internalContainer?.setBackgroundColor(if (isFinished) finishedColor else originalColor)
+            val color = if (isFinished) finishedColor else originalColor
+            internalContainer?.setBackgroundColor(color)
+            internalTimerContainer?.backgroundTintList = null
+            internalTimerContainer?.setBackgroundColor(color)
         }
 
         checkbox.isChecked = false
+        updateStepStyle(false)
         view.findViewById<TextView>(R.id.tvStepTitle).text = "Paso $number"
         view.findViewById<TextView>(R.id.tvStepDescription).text = step.description
 
@@ -167,12 +190,11 @@ class RecipeDetailActivity : AppCompatActivity() {
             checkAllStepsCompleted()
         }
 
-        val timerContainer = view.findViewById<LinearLayout>(R.id.timerContainer)
         if (step.timeMinutes != null && step.timeMinutes > 0) {
-            timerContainer.visibility = View.VISIBLE
+            internalTimerContainer?.visibility = View.VISIBLE
             setupTimer(view, step.timeMinutes * 60L, onCheckLogic)
         } else {
-            timerContainer.visibility = View.GONE
+            internalTimerContainer?.visibility = View.GONE
             checkbox.setOnCheckedChangeListener { _, isChecked ->
                 onCheckLogic(isChecked)
             }
@@ -185,6 +207,12 @@ class RecipeDetailActivity : AppCompatActivity() {
         stepsContainer.addView(view)
     }
 
+    /**
+     * Configura el temporizador para un paso que tiene tiempo definido.
+     * @param view Vista del paso.
+     * @param totalSeconds Segundos totales del temporizador.
+     * @param onCheckLogic Callback para manejar el estado de completado.
+     */
     private fun setupTimer(view: View, totalSeconds: Long, onCheckLogic: (Boolean) -> Unit) {
         val tvTimer = view.findViewById<TextView>(R.id.tvTimer)
         val btnToggle = view.findViewById<ImageButton>(R.id.btnTimerToggle)
@@ -194,7 +222,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         var timeLeft = totalSeconds
         var isRunning = false
         var timer: CountDownTimer? = null
-        var lastAudioTime = 0L
 
         fun stopTimer(pauseAudio: Boolean = true, hardStopAudio: Boolean = false) {
             timer?.cancel()
@@ -254,7 +281,6 @@ class RecipeDetailActivity : AppCompatActivity() {
             stopTimer(hardStopAudio = true)
             timeLeft = totalSeconds
             updateText()
-            lastAudioTime = 0L
         }
     }
 

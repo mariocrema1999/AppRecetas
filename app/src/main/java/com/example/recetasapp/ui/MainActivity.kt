@@ -9,9 +9,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +38,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Actividad principal de la aplicación.
+ * Muestra la lista de recetas, permite filtrar por categorías, buscar por nombre,
+ * y gestionar favoritos. También proporciona acceso al perfil de usuario y creación de recetas.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
@@ -51,6 +60,9 @@ class MainActivity : AppCompatActivity() {
     private var userAllergens = setOf<String>()
     private var userRestrictions = setOf<String>()
 
+    /**
+     * Lanzador para recibir resultados de RecipeFormActivity al crear o editar una receta.
+     */
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
             val recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -70,11 +82,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         
         val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         currentUserId = sharedPref.getString("logged_user", null)
         
+        // Redirigir al login si no hay sesión iniciada
         if (currentUserId == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -82,6 +96,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
+
         setSupportActionBar(findViewById(R.id.toolbar))
 
         audioManager = AudioManager(this)
@@ -91,6 +112,9 @@ class MainActivity : AppCompatActivity() {
         observeData()
     }
 
+    /**
+     * Configura los elementos de la interfaz de usuario.
+     */
     private fun setupUI() {
         recyclerView = findViewById(R.id.recyclerViewRecipes)
         
@@ -140,6 +164,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Alterna el estado de favorito de una receta para el usuario actual.
+     */
     private fun toggleFavorite(recipe: Recipe) {
         val userId = currentUserId ?: return
         lifecycleScope.launch(Dispatchers.IO) {
@@ -152,6 +179,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Observa los cambios en las recetas y favoritos de la base de datos.
+     */
     private fun observeData() {
         lifecycleScope.launch {
             val userId = currentUserId ?: ""
@@ -182,6 +212,10 @@ class MainActivity : AppCompatActivity() {
         filterRecipes(searchView?.query?.toString())
     }
 
+    /**
+     * Filtra la lista de recetas basándose en la búsqueda, categorías y preferencias del usuario.
+     * @param query Texto de búsqueda.
+     */
     private fun filterRecipes(query: String?) {
         if (!::cgFilters.isInitialized) return
 
@@ -214,6 +248,7 @@ class MainActivity : AppCompatActivity() {
             
             var fulfillsRestrictions = true
             
+            // Lógica de filtrado por restricciones dietéticas
             if (userRestrictions.contains(Restrictions.VEGANOS.name)) {
                 val isAnimalProduct = recipeCategories.any { it == RecipeCategory.CARNE || it == RecipeCategory.PESCADO || it == RecipeCategory.HUEVOS } ||
                                     recipeAllergens.any { it == Allergen.LACTEOS || it == Allergen.HUEVOS || it == Allergen.PESCADO || it == Allergen.CRUSTACEOS || it == Allergen.MOLUSCOS }
@@ -242,6 +277,9 @@ class MainActivity : AppCompatActivity() {
         updateEmptyState(filteredList.isEmpty())
     }
 
+    /**
+     * Muestra o oculta la vista de "sin resultados" según el estado de la lista.
+     */
     private fun updateEmptyState(isEmpty: Boolean) {
         val emptyView = findViewById<View>(R.id.emptyStateView)
         val tvEmptyMessage = findViewById<TextView>(R.id.tvEmptyMessage)

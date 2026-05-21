@@ -16,6 +16,14 @@ import com.bumptech.glide.Glide
 import com.google.android.material.chip.ChipGroup
 import java.util.Locale
 
+/**
+ * Adaptador para mostrar la lista de recetas en un RecyclerView.
+ *
+ * @property _recipes Lista inicial de recetas a mostrar.
+ * @property favoriteRecipeIds Conjunto de IDs de las recetas marcadas como favoritas.
+ * @property onFavoriteClick Acción a realizar al pulsar el botón de favorito.
+ * @property onClick Acción a realizar al pulsar sobre una receta.
+ */
 class RecipeAdapter(
     private var _recipes: List<Recipe>,
     private var favoriteRecipeIds: Set<String> = emptySet(),
@@ -23,12 +31,21 @@ class RecipeAdapter(
     private val onClick: (Recipe) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
+    /**
+     * Devuelve la lista actual de recetas del adaptador.
+     */
     val recipes: List<Recipe>
         get() = _recipes
 
+    /**
+     * Almacena la posición del elemento sobre el que se ha realizado una pulsación larga.
+     */
     var longClickedPosition: Int = -1
         private set
 
+    /**
+     * ViewHolder que contiene la vista de cada elemento de la lista de recetas.
+     */
     inner class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {
         val image: ImageView = view.findViewById(R.id.ivRecipeImage)
         val name: TextView = view.findViewById(R.id.tvRecipeName)
@@ -117,6 +134,12 @@ class RecipeAdapter(
 
     override fun getItemCount() = _recipes.size
 
+    /**
+     * Actualiza la lista de recetas y favoritos de forma eficiente utilizando DiffUtil.
+     *
+     * @param newRecipes Nueva lista de recetas.
+     * @param newFavorites Nuevo conjunto de IDs favoritos.
+     */
     fun updateRecipes(newRecipes: List<Recipe>, newFavorites: Set<String> = favoriteRecipeIds) {
         val oldRecipes = _recipes
         val oldFavorites = favoriteRecipeIds

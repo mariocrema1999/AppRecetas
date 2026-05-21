@@ -27,6 +27,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Actividad que gestiona el perfil del usuario.
+ * Permite ver y editar los datos personales (nombre, usuario, contraseña)
+ * y configurar preferencias de alérgenos y restricciones dietéticas.
+ */
 class UserProfileActivity : AppCompatActivity() {
     
     private lateinit var cgAllergens: ChipGroup
@@ -84,6 +89,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Carga los datos del usuario actual desde la base de datos basándose en el nombre de usuario guardado en sesión.
+     */
     private fun loadUserData() {
         val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val username = sharedPref.getString("logged_user", null)
@@ -101,6 +109,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Muestra un diálogo para que el usuario pueda editar su información personal.
+     */
     private fun showEditDialog() {
         val user = currentUser ?: return
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_user, null)
@@ -130,6 +141,13 @@ class UserProfileActivity : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * Guarda los cambios del perfil en la base de datos y actualiza la sesión si es necesario.
+     *
+     * @param newUsername Nuevo nombre de usuario.
+     * @param newPassword Nueva contraseña.
+     * @param newName Nuevo nombre a mostrar.
+     */
     private fun saveUserData(newUsername: String, newPassword: String, newName: String) {
         val oldUsername = currentUser?.username ?: return
         val database = AppDatabase.getDatabase(this)
@@ -170,6 +188,9 @@ class UserProfileActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Configura el ChipGroup de alérgenos cargando el estado guardado en preferencias.
+     */
     private fun setupAllergenChips() {
         val sharedPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val selectedAllergens = sharedPrefs.getStringSet(KEY_ALLERGENS, emptySet()) ?: emptySet()
@@ -191,6 +212,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Guarda la selección actual de alérgenos en SharedPreferences.
+     */
     private fun saveSelectedAllergens() {
         val selectedSet = mutableSetOf<String>()
         for (i in 0 until cgAllergens.childCount) {
@@ -207,6 +231,9 @@ class UserProfileActivity : AppCompatActivity() {
             .apply()
     }
 
+    /**
+     * Configura el ChipGroup de restricciones cargando el estado guardado en preferencias.
+     */
     private fun setupRestrictionsChips() {
         val sharedPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val selectedRestrictions = sharedPrefs.getStringSet(KEY_RESTRICTIONS, emptySet()) ?: emptySet()
@@ -227,6 +254,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Guarda la selección actual de restricciones en SharedPreferences.
+     */
     private fun saveSelectedRestrictions() {
         val selectedSet = mutableSetOf<String>()
         for (i in 0 until cgRestrictions.childCount) {

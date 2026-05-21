@@ -31,6 +31,10 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
 
+/**
+ * Actividad que proporciona un formulario para crear una nueva receta o editar una existente.
+ * Permite gestionar ingredientes, pasos, categorías, alérgenos e imágenes.
+ */
 class RecipeFormActivity : AppCompatActivity() {
 
     private val ingredients = mutableListOf<RecipeIngredient>()
@@ -46,6 +50,9 @@ class RecipeFormActivity : AppCompatActivity() {
     private lateinit var etTime: EditText
     private lateinit var etServings: EditText
 
+    /**
+     * Lanzador para seleccionar una imagen de la galería.
+     */
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             Log.d("PhotoPicker", "Selected URI: $uri")
@@ -89,6 +96,10 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Rellena los campos del formulario con los datos de una receta existente para su edición.
+     * @param recipe Receta a editar.
+     */
     private fun fillFormForEdit(recipe: Recipe) {
         supportActionBar?.title = "Editar Receta"
         editingRecipeId = recipe.id
@@ -138,6 +149,9 @@ class RecipeFormActivity : AppCompatActivity() {
         validate()
     }
 
+    /**
+     * Genera dinámicamente los Chips para la selección de alérgenos.
+     */
     private fun setupAllergenChips() {
         val cgAllergens = findViewById<ChipGroup>(R.id.cgAllergens)
         Allergen.values().forEach { allergen ->
@@ -152,6 +166,9 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Calcula el tiempo mínimo de preparación sumando el tiempo de cada paso individual.
+     */
     private fun minPreparationTime(steps: List<Step>): Int {
         var minTime = 0
         for(step in steps) {
@@ -162,6 +179,9 @@ class RecipeFormActivity : AppCompatActivity() {
         return minTime
     }
 
+    /**
+     * Guarda la imagen seleccionada en el almacenamiento interno de la aplicación.
+     */
     private fun saveImageToInternalStorage(uri: Uri): String? {
         try {
             val inputStream = contentResolver.openInputStream(uri) ?: return null
@@ -182,12 +202,18 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Valida si el formulario cumple con los requisitos mínimos para ser guardado.
+     */
     private fun validate() {
         btnSave.isEnabled = !TextUtils.isEmpty(etName.text) &&
                             !TextUtils.isEmpty(etDesc.text) &&
                             steps.isNotEmpty()
     }
 
+    /**
+     * Actualiza la vista de la lista de ingredientes en el formulario.
+     */
     private fun refreshIngredientsUI() {
         llIngredientsContainer.removeAllViews()
         ingredients.forEachIndexed { index, ingredient ->
@@ -206,6 +232,9 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Actualiza la vista de la lista de pasos en el formulario.
+     */
     private fun refreshStepsUI() {
         llStepsContainer.removeAllViews()
         steps.forEachIndexed { index, step ->
@@ -225,6 +254,9 @@ class RecipeFormActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura los listeners para los botones de añadir ingredientes y pasos.
+     */
     @SuppressLint("SetTextI18n")
     private fun setupInputs() {
         val etImage = findViewById<Button>(R.id.etRecipeImage)

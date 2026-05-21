@@ -6,6 +6,11 @@ import androidx.room.PrimaryKey
 import com.example.recetasapp.R
 import kotlinx.parcelize.Parcelize
 
+/**
+ * Categorías posibles para clasificar una receta.
+ *
+ * @property displayName Nombre de la categoría legible para el usuario.
+ */
 enum class RecipeCategory(val displayName: String) {
     CARNE("Carne"),
     PESCADO("Pescado"),
@@ -18,6 +23,12 @@ enum class RecipeCategory(val displayName: String) {
     SOPAS_CREMAS("Sopas y Cremas")
 }
 
+/**
+ * Alérgenos que puede contener una receta.
+ *
+ * @property displayName Nombre del alérgeno legible para el usuario.
+ * @property iconResId Recurso de imagen que representa el alérgeno.
+ */
 enum class Allergen(val displayName: String, val iconResId: Int) {
     GLUTEN("Cereales con gluten", R.drawable.allergengluten),
     CRUSTACEOS("Crustáceos", R.drawable.crustaceos),
@@ -35,6 +46,11 @@ enum class Allergen(val displayName: String, val iconResId: Int) {
     SULFITOS("Sulfitos", R.drawable.alergenossulfitos)
 }
 
+/**
+ * Restricciones dietéticas aplicables a las recetas.
+ *
+ * @property displayName Nombre de la restricción legible para el usuario.
+ */
 enum class Restrictions(val displayName: String) {
     CELIACOS("Celíacos"),
     VEGETARIANOS("Vegetarianos"),
@@ -42,18 +58,49 @@ enum class Restrictions(val displayName: String) {
     PESCETARIANOS("Pescetarianos")
 }
 
+/**
+ * Representa un paso individual en las instrucciones de una receta.
+ *
+ * @property description Descripción detallada de qué hacer en este paso.
+ * @property timeMinutes Tiempo estimado en minutos para completar este paso (opcional).
+ */
 @Parcelize
 data class Step(
     val description: String,
     val timeMinutes: Int? = null
 ) : Parcelable
 
+/**
+ * Representa un ingrediente necesario para una receta.
+ *
+ * @property name Nombre del ingrediente.
+ * @property quantity Cantidad necesaria (ej. "200g", "2 unidades").
+ */
 @Parcelize
 data class RecipeIngredient(
     val name: String,
     val quantity: String? = null
 ) : Parcelable
 
+/**
+ * Entidad que representa una receta completa en la base de datos.
+ *
+ * @property id Identificador único de la receta.
+ * @property name Nombre de la receta.
+ * @property description Breve descripción de la receta.
+ * @property image URL o ruta de la imagen representativa.
+ * @property prepTime Tiempo total de preparación en minutos.
+ * @property servings Número de raciones.
+ * @property ingredients Lista de ingredientes necesarios.
+ * @property steps Lista de pasos a seguir.
+ * @property categories Categorías a las que pertenece la receta.
+ * @property allergens Lista de alérgenos presentes.
+ * @property restrictions Restricciones dietéticas para las que es apta.
+ * @property creatorId ID del usuario que creó la receta (null para recetas por defecto).
+ * @property isPublic Indica si la receta es visible para todos los usuarios.
+ * @property ratingSum Suma total de las puntuaciones recibidas.
+ * @property ratingCount Número total de valoraciones recibidas.
+ */
 @Entity(tableName = "recipes")
 @Parcelize
 data class Recipe(
@@ -73,10 +120,16 @@ data class Recipe(
     val ratingSum: Float = 0f,
     val ratingCount: Int = 0
 ) : Parcelable {
+    /**
+     * Calcula la valoración media de la receta.
+     */
     val averageRating: Float
         get() = if (ratingCount > 0) ratingSum / ratingCount else 0f
 }
 
+/**
+ * Lista de recetas cargadas por defecto en la aplicación.
+ */
 val DEFAULT_RECIPES = listOf(
     Recipe(
         id = "1",
@@ -217,7 +270,7 @@ val DEFAULT_RECIPES = listOf(
         ),
         steps = listOf(
             Step("Desgrana las habas y ponlas a cocer en una cazuela con agua y una pizca de sal.",13),
-            Step("Pon un poco de aceite in una sartén y pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
+            Step("Pon un poco de aceite in una sartén and pon a pochar a fuego bajo el ajo picado finamente, las judías y los pimientos cortados en juliana fina.", 20),
             Step("Cuando esté pochado, agrega una cucharada de harina."),
             Step("Rehoga brevemente y vierte the vino, el agua y una pizca de sal Deja cocer 10 minutos.", 10),
             Step("Pon en una jarra la leche, el rsto de la harina(reserva una cucharada, un poco de perejil picado, los huevos, una cucharada de aceite y bate con una batidora"),

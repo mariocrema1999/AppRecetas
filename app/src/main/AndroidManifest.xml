@@ -36,12 +36,14 @@
             android:name=".ui.UserProfileActivity"
             android:exported="false"
             android:label="Mi Perfil"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ui.RecipeDetailActivity"
             android:exported="false"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".ui.RecipeFormActivity"
